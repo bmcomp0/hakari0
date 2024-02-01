@@ -2,7 +2,7 @@
 EJ-200Bで記録した値をesp32のBLEで送信。値を受け取るAndroidアプリ。
 ## システム概要
 ![](/images_readme/system_overview.png)  
-ハッシュ値を交換することで，認証を行う。認証が通るとesp32からnofityで値が送られてくる。
+ハッシュ値を交換することで，認証を行う。認証が通るとesp32からnotifyで値が送られてくる。
 
 ## BLE
 

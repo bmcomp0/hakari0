@@ -1,6 +1,6 @@
 package com.example.scalesseparatefileble.ui
 
-import android.view.Surface
+import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,7 +14,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.model.SampleViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
@@ -27,6 +29,11 @@ fun FirstScreen(
     bluetoothManager: BluetoothManager,
     onTapNextButton: () -> Unit = {}
 ) {
+    // Initialize Bluetooth when the Composable is used
+    LaunchedEffect(Unit,bluetoothManager) {
+        bluetoothManager.initializeBluetooth()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -56,12 +63,8 @@ fun BLEMain(
     onClickButton: () -> Unit = {},
     paddingValues: PaddingValues
 ){
-    // Initialize Bluetooth when the Composable is used
-    LaunchedEffect(bluetoothManager) {
-        bluetoothManager.initializeBluetooth()
-    }
-
     val deviceAddress = bluetoothManager.deviceAddress
+    val context = LocalContext.current
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -74,7 +77,11 @@ fun BLEMain(
             Text(text = "Hello World", fontSize = 50.sp)
             Button(onClick = {
                 GlobalScope.launch {
-                    bluetoothManager.startScanning()
+                    if(ContextCompat.checkSelfPermission(context, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED){
+                        bluetoothManager.initializeBluetooth()
+                    }else{
+                        bluetoothManager.startScanning()
+                    }
                 }
             }) {
                 Text(

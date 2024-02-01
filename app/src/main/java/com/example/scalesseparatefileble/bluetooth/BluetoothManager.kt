@@ -47,7 +47,7 @@ class BluetoothManager(
         checkBluetoothPermissions()
 
         // Set initial Bluetooth status
-        bluetoothStatus.value = isBluetoothEnabled()
+//        bluetoothStatus.value = isBluetoothEnabled()
 
         // Initialization code...
     }

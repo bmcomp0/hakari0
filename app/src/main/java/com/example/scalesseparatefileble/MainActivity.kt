@@ -4,33 +4,13 @@ package com.example.scalesseparatefileble
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.animateScrollBy
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.model.SampleViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scalesseparatefileble.ui.*
-//import com.example.scalesseparatefileble.ui.BLEData
-//import com.example.scalesseparatefileble.ui.BLEMain
-//import com.example.scalesseparatefileble.ui.CSVDataShow
-//import com.example.scalesseparatefileble.ui.DataLabel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
