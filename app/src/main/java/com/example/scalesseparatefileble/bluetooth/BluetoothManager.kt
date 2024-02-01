@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
@@ -19,6 +20,7 @@ import com.example.scalesseparatefileble.util.BluetoothUtilities
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.util.*
 
 class BluetoothManager(
@@ -73,14 +75,13 @@ class BluetoothManager(
     }
 
     fun connectToDevice(deviceAddress: String) {
-        // Connection code...
-        val device = bluetoothAdapter?.getRemoteDevice(deviceAddress)
-        if(device == null){
-            Log.d("device.connection", "デバイスが見つかりません")
-        }else{
-            var bluetoothGatt = device.connectGatt(context, false, mGattCallback)
+        try {
+            val device = bluetoothAdapter?.getRemoteDevice(deviceAddress)
+            device?.connectGatt(context, false, mGattCallback)
+        } catch (e: IOException) {
+            // Handle the exception and show a Toast for failure
+            e.printStackTrace()
         }
-
     }
 
     private fun checkBluetoothPermissions() {
@@ -270,7 +271,6 @@ class BluetoothManager(
             super.onCharacteristicWrite(gatt, characteristic, status)
             Log.d("bluetooth.write.characteristic", "success: $status")
             if(status == 0){
-//                if(flag.value ==  0 || flag.value == 1){
                 if(flag.value ==  0 ){
                     GlobalScope.launch {
                         delay(500)

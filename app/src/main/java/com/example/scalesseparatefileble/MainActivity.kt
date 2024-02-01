@@ -9,29 +9,28 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.model.SampleViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.scalesseparatefileble.ui.*
+//import com.example.scalesseparatefileble.ui.BLEData
+//import com.example.scalesseparatefileble.ui.BLEMain
+//import com.example.scalesseparatefileble.ui.CSVDataShow
+//import com.example.scalesseparatefileble.ui.DataLabel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.TextStyle
-import com.example.scalesseparatefileble.ui.BLEData
-import com.example.scalesseparatefileble.ui.BLEMain
-import com.example.scalesseparatefileble.ui.CSVDataShow
-import com.example.scalesseparatefileble.ui.DataLabel
 
 
 class MainActivity : ComponentActivity() {
@@ -56,26 +55,40 @@ fun NavControllers(viewModel: SampleViewModel, bluetoothManager: BluetoothManage
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "First") {
         composable(route = "First") {
-            BLEMain(viewModel = viewModel, bluetoothManager = bluetoothManager, onClickButton = { navController.navigate("Second") })
+            FirstScreen(
+                viewModel = viewModel,
+                bluetoothManager = bluetoothManager,
+                onTapNextButton = { navController.navigate("Second") }
+            )
         }
         composable(route = "Second") {
-            DataLabel(viewModel = viewModel, onClickButton = { navController.navigate("Third") })
+            SecondScreen(
+                viewModel = viewModel,
+                onTapNextButton = { navController.navigate("Third") },
+                onTapBackButton = { navController.navigate("First") }
+            )
         }
         composable(route = "Third"){
-            BLEData(viewModel = viewModel, bluetoothManager = bluetoothManager, onClickButton = { navController.navigate("Fourth") })
+            ThirdScreen(
+                viewModel = viewModel,
+                bluetoothManager = bluetoothManager,
+                onTapNextButton = { navController.navigate("Fourth") },
+                onTapBackButton = { navController.navigate("Second") }
+            )
         }
         composable(route = "Fourth"){
-            CSVDataShow(viewModel = viewModel)
+            FourthScreen(
+                viewModel = viewModel,
+                onTapBackButton = { navController.navigate("Third") },
+                onTapNextButton = { navController.navigate("Fifth") }
+            )
+        }
+        composable(route = "Fifth"){
+            FifthScreen(
+                viewModel = viewModel,
+                onTapBackButton = { navController.navigate("Fourth") }
+            )
         }
     }
 }
-
-
-
-
-
-
-
-
-
 

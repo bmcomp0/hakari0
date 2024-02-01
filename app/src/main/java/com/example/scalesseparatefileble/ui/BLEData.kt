@@ -1,26 +1,60 @@
 package com.example.scalesseparatefileble.ui
 
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.model.SampleViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
 
+
 @Composable
-fun BLEData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onClickButton: () -> Unit){
+fun ThirdScreen(
+    viewModel: SampleViewModel = hiltViewModel(),
+    bluetoothManager: BluetoothManager,
+    onTapNextButton: () -> Unit = {},
+    onTapBackButton: () -> Unit = {}
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                backgroundColor = Color.LightGray,
+                title = { Text("Label: ${viewModel.label.value}") },
+                navigationIcon = {
+                    IconButton(onClick = { onTapBackButton() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "戻る")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { onTapNextButton() }) {
+                        Icon(Icons.Default.ArrowForward, contentDescription = "次へ")
+                    }
+                }
+            )
+        }
+    ) {
+        BLEData(
+            viewModel = viewModel,
+            bluetoothManager = bluetoothManager,
+            onClickButton = onTapNextButton,
+            paddingValues = it
+        )
+
+    }
+}
+
+@Composable
+fun BLEData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onClickButton: () -> Unit, paddingValues: PaddingValues){
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -31,7 +65,6 @@ fun BLEData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onCl
             verticalArrangement = Arrangement.Top
         ) {
             Text(text = bluetoothManager.bluetoothUtilities.bleStateMessage.value, fontSize = 26.sp)
-            Text(text = "Label : ${viewModel.label.value}", fontSize = 20.sp)
             Box(
                 modifier = Modifier.size(420.dp),
                 contentAlignment = Alignment.TopCenter
@@ -39,15 +72,11 @@ fun BLEData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onCl
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    List1(viewModel = viewModel)
+                    ContentScreen(viewModel)
                 }
             }
             NotificationData(viewModel = viewModel, bluetoothManager = bluetoothManager)
-            Button(onClick = {
-                viewModel.saveDataCsv()
-            }) {
-                Text(text = "保存")
-            }
+            ActionButton(viewModel = viewModel)
             Button(onClick = onClickButton) {
                 Text(text = "next")
             }
@@ -56,43 +85,35 @@ fun BLEData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onCl
 }
 
 @Composable
-fun List1(viewModel: SampleViewModel, onClickItem: (Int)-> Unit = {}) {
-    val listState = rememberLazyListState()
-    val items = viewModel.dataList
-
-    LazyColumn(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        state = listState
-    ) {
-        itemsIndexed(items) { index, item ->
-            Row(
-                modifier = Modifier.clickable { onClickItem(index) }
-            ) {
-                Text(text = item, fontSize = 30.sp)
-            }
-        }
-    }
-
-
-    LaunchedEffect(items.size){
-        if(items.size != 0){
-            listState.animateScrollBy(
-                value = 200f,
-                animationSpec = tween(durationMillis = 1000)
-            )
+private fun NotificationData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager){
+    val number = bluetoothManager.number
+    Row{
+        Text(text = number.value, fontSize = 35.sp)
+        Button(onClick = {
+            viewModel.addItem(number.value)
+        }) {
+            Text(text = "追加")
         }
     }
 }
 
 @Composable
-fun NotificationData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager){
-    val number = bluetoothManager.number
-    Row{
-        Text(text = number.value, fontSize = 35.sp)
+private fun ActionButton(viewModel: SampleViewModel){
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(onClick = { viewModel.undoRemoval() }) {
+            Text("値を戻す")
+        }
         Button(onClick = {
-            viewModel.addData(number.value)
+            viewModel.saveDataCsv()
+//            Toast.makeText(context, "これはトーストです", Toast.LENGTH_SHORT).show()
         }) {
-            Text(text = "決定")
+            Text("保存")
         }
     }
 }

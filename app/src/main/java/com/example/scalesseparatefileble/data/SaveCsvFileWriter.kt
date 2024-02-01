@@ -2,65 +2,74 @@ package com.example.scalesseparatefileble.data
 
 import android.content.Context
 import android.os.Environment
+import com.example.model.ColumnItem
 import com.opencsv.CSVReader
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
+import java.util.*
 
 class SaveCsvFileWriter {
-    fun saveToCsv(data: List<String>, context: Context, label: String) {
+    fun saveToCsv(data: List<ColumnItem>, context: Context, label: String) {
         try {
-
-            var files: Array<String> = context.fileList()
-            println("Files: ${files.joinToString(", ")}")
-
             // Get the external storage directory
             val externalStorageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-//            val externalStorageDir = context.filesDir
 
             // Create a CSV file
-            val csvFile = File(externalStorageDir, "data.csv")
-            csvFile.createNewFile()
+            val csvFile = File(externalStorageDir, "data_${label}.csv")
 
-            // Use BufferedWriter for efficient writing
-            csvFile.bufferedWriter().use { writer ->
-                // Write header
-//                writer.write("Weight")
-                writer.write("index,$label")
-                writer.newLine()
-
-                // Write data to the CSV file
-                data.forEachIndexed { index, weight ->
-                    writer.write("$index, $weight")
+            // If the file doesn't exist, create a new one with the header
+            if (!csvFile.exists()) {
+                csvFile.createNewFile()
+                csvFile.bufferedWriter().use { writer ->
+                    writer.write("$label : id, value")
                     writer.newLine()
                 }
             }
 
-            // Notify the user that the data has been saved
-            // (You might want to use a Toast or Snackbar for a better user experience)
-            println("Data saved to CSV file: ${csvFile.absolutePath}")
+            // Read existing data from the file
+            val existingData = readCsvFile(csvFile)
+
+            // Combine the existing data with the new data
+            val combinedData = existingData + data
+
+            // Write the combined data back to the file
+            csvFile.bufferedWriter().use { writer ->
+                writer.write("$label : index, value")
+                writer.newLine()
+                combinedData.forEachIndexed { index, columnItem ->
+                    writer.write("${index+1},${columnItem.value}")
+                    writer.newLine()
+                }
+            }
+
+            // Notify the user that the data has been modified
+            println("Data modified in CSV file: ${csvFile.absolutePath}")
         } catch (e: IOException) {
             // Handle the exception
             e.printStackTrace()
         }
     }
 
-    fun readCsvFile(csvFile: File): Array<Array<String>> {
-        val dataRows = mutableListOf<Array<String>>()
+    fun readCsvFile(csvFile: File): List<ColumnItem> {
+//        val dataRows = mutableListOf<Array<String>>()
+        val dataRows = mutableListOf<ColumnItem>()
 
         try {
             // Create a CSVReader object
             val csvReader = CSVReader(FileReader(csvFile))
 
             // Read the header line (if any)
-//            val headers = csvReader.readNext()
+            val headers = csvReader.readNext()
 
             // Process each row in the CSV file
             var record: Array<String>?
             while (csvReader.readNext().also { record = it } != null) {
+                println(record?.get(0))
                 // Process the data in each row
-                dataRows.add(record ?: continue)
-
+                val id = UUID.randomUUID()
+                val value = record?.get(1) ?: ""
+                dataRows.add(ColumnItem(id = id, value = value))
             }
 
             // Close the CSVReader
@@ -69,6 +78,37 @@ class SaveCsvFileWriter {
             // Handle IOException, such as file not found or other issues
             e.printStackTrace()
         }
-        return dataRows.toTypedArray()
+        return dataRows
+    }
+
+    fun getFiles(context: Context): List<String> {
+        val files: Array<File>
+        val fileNames = mutableListOf<String>()
+
+        val externalStorageDir: File = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)!!
+        files = externalStorageDir.listFiles() ?: arrayOf()
+
+        for (file in files) {
+            fileNames.add(file.name)
+        }
+
+        return fileNames
+    }
+
+    fun deleteAllFiles(context: Context){
+        val files: Array<File>?
+        val message: String
+
+        val text = java.lang.StringBuilder("\n")
+        val externalStorageDir: File = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)!!
+        files = externalStorageDir.listFiles()
+        if (files != null) {
+            for (file in files) {
+                text.append(file.name).append("\n")
+                file.delete()
+            }
+        }
+        message = "deleted files = [$text]"
+        println(message)
     }
 }

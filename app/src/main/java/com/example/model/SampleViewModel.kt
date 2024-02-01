@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Environment
+import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,16 +15,47 @@ import androidx.lifecycle.viewModelScope
 import com.example.scalesseparatefileble.data.SaveCsvFileWriter
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.Arrays
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.IOException
+import javax.inject.Inject
 
-class SampleViewModel(context: Context) : ViewModel() {
-    val items = MutableLiveData<MutableList<String>>(mutableStateListOf())
-    val dataList = mutableStateListOf<String>()
+@HiltViewModel
+class SampleViewModel @Inject constructor(
+    @ApplicationContext context: Context
+    ) : ViewModel() {
+    val devices = MutableLiveData<MutableList<String>>(mutableStateListOf())
+//    val dataList = mutableStateListOf<String>()
     private val context = context
     private val saveCsvFile = SaveCsvFileWriter()
     val label = mutableStateOf("")
-    val csvDataList = mutableListOf<Array<String>>()
-//    var label by remember { mutableStateOf("") }
+
+    val csvFileList = mutableListOf<String>()
+    val csvDataList = mutableListOf<ColumnItem>()
+
+    val items = mutableStateListOf<ColumnItem>()
+    private val lastRemovedItems = mutableListOf<Pair<ColumnItem, Int>>() // アイテムとその元のインデックスを保持
+
+    // 項目を追加
+    fun addItem(value: String) {
+        val newItem = ColumnItem(value = value)
+        items.add(newItem)
+    }
+
+    // 項目を削除
+    fun removeItem(item: ColumnItem) {
+        val index = items.indexOf(item)
+        lastRemovedItems.add(item to index) // アイテムとそのインデックスを保存
+        items.remove(item)
+    }
+
+    // 最後に削除された項目を復元
+    fun undoRemoval() {
+        if (lastRemovedItems.isNotEmpty()) {
+            val (itemToRestore, index) = lastRemovedItems.removeLast()
+            items.add(index, itemToRestore) // 元のインデックスにアイテムを挿入
+        }
+    }
 
     init {
         // Request WRITE_EXTERNAL_STORAGE permission
@@ -32,70 +64,45 @@ class SampleViewModel(context: Context) : ViewModel() {
         if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(context as Activity, arrayOf(permission), requestCode)
         }
+        saveCsvFile.getFiles(context)
     }
-//    val bluetoothStatus = MutableLiveData<Boolean>()
-//    val preferenceDataStore = PreferenceDataStore.getInstance(context)
-
-//    fun getAllData(): Map<Preferences.Key<*>, Any>{
-//        viewModelScope.launch {
-//            val allData = preferenceDataStore.getAllData()
-//            for ((key, value) in allData) {
-//                println("Key: $key, Value: $value")
-//            }
-//        }
-//    }
 
     fun saveDataCsv(){
-        viewModelScope.launch {
-            saveCsvFile.saveToCsv(dataList, context, label.value)
+        try {
+            saveCsvFile.saveToCsv(items, context, label.value)
+            Toast.makeText(context, "保存しました", Toast.LENGTH_SHORT).show()
+        }catch (e: IOException) {
+            // Handle the exception and show a Toast for failure
+            Toast.makeText(context, "保存できませんでした", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
         }
     }
 
-    fun readDataCsv(){
+    fun readDataCsv(fileName: String){
         val externalStorageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-        val csvFile = File(externalStorageDir, "data.csv")
+        val csvFile = File(externalStorageDir, fileName)
         val data = saveCsvFile.readCsvFile(csvFile)
         // Print the returned array (just for demonstration)
-        data.forEach { row ->
-//            println(row.joinToString(", "))
-            println("data: ${row.contentToString()}")
+        data.forEach { columnItem ->
+            println("data: id=${columnItem.id}, text=${columnItem.value}")
         }
         csvDataList.clear()  // Clear existing data
         csvDataList.addAll(data)  // Add new data
     }
 
     fun addDevice(deviceName: String) {
-        if (items.value?.contains(deviceName) == false) {
-            items.value?.add(deviceName)
+        if (devices.value?.contains(deviceName) == false) {
+            devices.value?.add(deviceName)
         }
     }
 
-    fun addData(data: String) {
-        dataList.add(data)
+    fun getFileList(){
+        val data = saveCsvFile.getFiles(context)
+        // Print the returned array (just for demonstration)
+        data.forEach { text ->
+            println("$text")
+        }
+        csvFileList.clear()  // Clear existing data
+        csvFileList.addAll(data)  // Add new data
     }
-
-//    fun saveTitle(key: String){
-//        viewModelScope.launch {
-//            preferenceDataStore.saveTitle(key)
-//        }
-//    }
-
-//    fun saveData(key: String, value: String){
-//        viewModelScope.launch {
-//            preferenceDataStore.saveData(key, value)
-//        }
-//    }
-
-//    fun showData(){
-//        viewModelScope.launch {
-//            preferenceDataStore.user.collect{
-//                println("Thread name {${Thread.currentThread().name}}: collect start")
-//                println(it)
-//            }
-//        }
-//    }
-
-//    fun setBluetoothStatus(status: Boolean) {
-//        bluetoothStatus.value = status
-//    }
 }

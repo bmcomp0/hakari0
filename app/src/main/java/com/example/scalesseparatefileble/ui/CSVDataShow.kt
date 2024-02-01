@@ -1,43 +1,89 @@
 package com.example.scalesseparatefileble.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.model.ColumnItem
 import com.example.model.SampleViewModel
 
+
 @Composable
-fun CSVDataShow(viewModel: SampleViewModel){
-    viewModel.readDataCsv()
+fun FifthScreen(
+    viewModel: SampleViewModel = hiltViewModel(),
+    onTapBackButton: () -> Unit = {}
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                backgroundColor = Color.LightGray,
+                title = { Text("File List") },
+                navigationIcon = {
+                    IconButton(onClick = { onTapBackButton() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "戻る")
+                    }
+                }
+            )
+        }
+    ) {
+        CSVDataShow(
+            viewModel = viewModel,
+            paddingValues = it
+        )
+    }
+}
+
+@Composable
+fun CSVDataShow(
+    viewModel: SampleViewModel,
+    paddingValues: PaddingValues
+) {
     val csvDataList = viewModel.csvDataList
     CsvDataListScreen(dataList = csvDataList)
 }
 
 @Composable
-fun CsvDataListScreen(dataList: List<Array<String>>) {
+fun CsvDataListScreen(dataList: List<ColumnItem>) {
     // Scrollable column to display the list
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp)
     ) {
-        items(dataList) { rowData ->
-            // Row Composable to display each row of data
-            Row(
+        itemsIndexed(items = dataList, key = { _, item -> item.id }) { index, item ->
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(bottom = 8.dp), // Adjusted bottom padding
             ) {
-                // Display each item in the row
-                rowData.forEach { item ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
-                        text = item,
-                        style = TextStyle(fontSize = 16.sp)
+                        text = "${index + 1}. ",
+                        style = MaterialTheme.typography.h6,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = "${item.value}", // Updated to use item.text instead of item.value
+                        style = MaterialTheme.typography.body1,
+                        modifier = Modifier.weight(2f)
                     )
                 }
             }

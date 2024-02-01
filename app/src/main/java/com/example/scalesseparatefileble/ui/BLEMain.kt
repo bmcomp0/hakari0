@@ -1,23 +1,60 @@
 package com.example.scalesseparatefileble.ui
 
+import android.view.Surface
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
+import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.model.SampleViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun BLEMain(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onClickButton: () -> Unit = {}){
+fun FirstScreen(
+    viewModel: SampleViewModel = hiltViewModel(),
+    bluetoothManager: BluetoothManager,
+    onTapNextButton: () -> Unit = {}
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                backgroundColor = Color.LightGray,
+                title = { Text("FirstScreen") },
+                actions = {
+                    IconButton(onClick = { onTapNextButton() }) {
+                        Icon(Icons.Default.ArrowForward, contentDescription = "次へ")
+                    }
+                }
+            )
+        }
+    ) {
+        BLEMain(
+            viewModel = viewModel,
+            bluetoothManager = bluetoothManager,
+            onClickButton = onTapNextButton,
+            paddingValues = it
+        )
+    }
+}
+
+@Composable
+fun BLEMain(
+    viewModel: SampleViewModel,
+    bluetoothManager: BluetoothManager,
+    onClickButton: () -> Unit = {},
+    paddingValues: PaddingValues
+){
     val deviceAddress = bluetoothManager.deviceAddress
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -30,13 +67,6 @@ fun BLEMain(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onCl
         ) {
             Text(text = "Hello World", fontSize = 50.sp)
             Button(onClick = {
-                bluetoothManager.initializeBluetooth()
-            }) {
-                Text(
-                    text = "Adapt"
-                )
-            }
-            Button(onClick = {
                 GlobalScope.launch {
                     bluetoothManager.startScanning()
                 }
@@ -46,7 +76,7 @@ fun BLEMain(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onCl
                 )
             }
             Button(onClick = {
-                onClickButton
+//                onClickButton()
                 GlobalScope.launch {
                     bluetoothManager.connectToDevice(deviceAddress.value)
                 }
@@ -69,7 +99,7 @@ fun BLEMain(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onCl
 
 @Composable
 fun DeviceList(viewModel: SampleViewModel) {
-    val items = viewModel.items
+    val items = viewModel.devices
 
     Column {
         items.value?.forEach { item ->
