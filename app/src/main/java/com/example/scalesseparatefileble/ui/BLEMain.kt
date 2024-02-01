@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,6 +56,11 @@ fun BLEMain(
     onClickButton: () -> Unit = {},
     paddingValues: PaddingValues
 ){
+    // Initialize Bluetooth when the Composable is used
+    LaunchedEffect(bluetoothManager) {
+        bluetoothManager.initializeBluetooth()
+    }
+
     val deviceAddress = bluetoothManager.deviceAddress
     Surface(
         modifier = Modifier.fillMaxSize(),

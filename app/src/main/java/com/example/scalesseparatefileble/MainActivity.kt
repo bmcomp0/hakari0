@@ -38,13 +38,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel = SampleViewModel(this@MainActivity)
+        val bluetoothManager by lazy { BluetoothManager(this, viewModel) }
         setContent {
-            val viewModel = SampleViewModel(this@MainActivity)
-            val bluetoothManager by lazy { BluetoothManager(this, viewModel) }
-
-            // Initialize Bluetooth
-            bluetoothManager.initializeBluetooth()
-
             NavControllers(viewModel = viewModel, bluetoothManager = bluetoothManager)
         }
     }
