@@ -1,4 +1,4 @@
-package com.example.model
+package com.example.scalesseparatefileble.util
 
 import java.util.*
 

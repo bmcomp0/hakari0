@@ -11,9 +11,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.scalesseparatefileble.data.SaveCsvFileWriter
-import kotlinx.coroutines.launch
+import com.example.scalesseparatefileble.util.ColumnItem
 import java.io.File
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,6 +31,7 @@ class SampleViewModel @Inject constructor(
 
     val csvFileList = mutableListOf<String>()
     val csvDataList = mutableListOf<ColumnItem>()
+    val readingCsvFile = mutableStateOf<String>("")
 
     val items = mutableStateListOf<ColumnItem>()
     private val lastRemovedItems = mutableListOf<Pair<ColumnItem, Int>>() // アイテムとその元のインデックスを保持
@@ -79,6 +79,8 @@ class SampleViewModel @Inject constructor(
     }
 
     fun readDataCsv(fileName: String){
+        readingCsvFile.value = fileName
+
         val externalStorageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
         val csvFile = File(externalStorageDir, fileName)
         val data = saveCsvFile.readCsvFile(csvFile)

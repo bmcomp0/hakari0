@@ -21,8 +21,8 @@ class BluetoothUtilities {
                 4 -> bleStateMessage.value = "切断しました"
                 5 -> bleStateMessage.value = "133"
                 6 -> bleStateMessage.value = "BLE通信中"
-                7 -> bleStateMessage.value = "ペリフェラル認証完了"
-                8 -> bleStateMessage.value = "セントラル認証完了"
+                7 -> bleStateMessage.value = "セントラル認証完了"
+                8 -> bleStateMessage.value = "ペリフェラル認証完了"
             }
         }
 

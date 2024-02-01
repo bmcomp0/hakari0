@@ -2,7 +2,7 @@ package com.example.scalesseparatefileble.data
 
 import android.content.Context
 import android.os.Environment
-import com.example.model.ColumnItem
+import com.example.scalesseparatefileble.util.ColumnItem
 import com.opencsv.CSVReader
 import java.io.File
 import java.io.FileReader

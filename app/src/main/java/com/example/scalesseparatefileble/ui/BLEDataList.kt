@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.model.CustomSwipeToDismiss
+import com.example.scalesseparatefileble.util.CustomSwipeToDismiss
 import com.example.model.SampleViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
