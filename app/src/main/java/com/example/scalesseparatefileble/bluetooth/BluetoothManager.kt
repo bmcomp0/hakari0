@@ -7,6 +7,7 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Handler
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -206,6 +207,54 @@ class BluetoothManager(
         }
 
         override fun onCharacteristicRead(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?,
+            status: Int
+        ) {
+            super.onCharacteristicRead(gatt, characteristic, status)
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                val value = characteristic?.value
+                val stringValue = value?.let { String(it) } ?: ""
+                Log.d("bluetooth.gatt.read", stringValue)
+
+                when (flag.value) {
+                    1 -> {
+                        hash.value = bluetoothUtilities.md5(stringValue)
+                        println(hash.value)
+                        GlobalScope.launch {
+                            delay(500)
+                            writeFunction(gatt, characteristic!!, hash.value)
+                        }
+                    }
+                    2 -> {
+                        if (stringValue == "next") {
+                            GlobalScope.launch {
+                                delay(500)
+                                writeFunction(gatt, characteristic!!, "test2")
+                            }
+                            bluetoothUtilities.bleStateMessageChange(7)
+                        }
+                    }
+                    3 -> {
+                        hash.value = bluetoothUtilities.md5("test2")
+                        println(stringValue == hash.value)
+                        if (stringValue == hash.value) {
+                            GlobalScope.launch {
+                                delay(1000)
+                                writeFunction(gatt, characteristic!!, "ok")
+                            }
+                            bluetoothUtilities.bleStateMessageChange(8)
+                        } else {
+                            gatt?.disconnect()
+                        }
+                    }
+                }
+            } else {
+                Log.w("BluetoothGattCallback", "Characteristic read failed with status: $status")
+            }
+        }
+
+        override fun onCharacteristicRead(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray,
@@ -246,6 +295,18 @@ class BluetoothManager(
                     }
                 }
             }
+        }
+
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?
+        ) {
+            val value = characteristic?.value
+            val stringValue = value?.let { String(it) } ?: ""
+            Log.d("bluetooth.gatt.notify", stringValue)
+            bluetoothUtilities.bleStateMessageChange(6)
+            // Update the list with the received notification data
+            number.value = stringValue
         }
 
         override fun onCharacteristicChanged(
@@ -304,7 +365,14 @@ class BluetoothManager(
             //write
             val charset = Charsets.UTF_8
             val data = string.toByteArray(charset = charset)
-            gatt?.writeCharacteristic(gattNotifyCharacteristic, data, BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE)
+//            gatt?.writeCharacteristic(gattNotifyCharacteristic, data, BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // API level 33
+                gatt?.writeCharacteristic(gattNotifyCharacteristic, data, BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE)
+            } else {
+                gattNotifyCharacteristic.value = data
+                gatt?.writeCharacteristic(gattNotifyCharacteristic)
+            }
         }
 
         private fun readFunction(
