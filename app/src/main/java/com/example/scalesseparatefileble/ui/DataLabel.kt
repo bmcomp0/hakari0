@@ -1,9 +1,6 @@
 package com.example.scalesseparatefileble.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -12,9 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.model.SampleViewModel
 
@@ -28,7 +27,7 @@ fun SecondScreen(
         topBar = {
             TopAppBar(
                 backgroundColor = Color.LightGray,
-                title = { Text("SecondScreen") },
+                title = { Text("SecondScreen",fontSize = 28.sp) },
                 navigationIcon = {
                     IconButton(onClick = { onTapBackButton() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "戻る")
@@ -64,14 +63,22 @@ fun DataLabel(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
+                .padding(paddingValues)
         ) {
             OutlinedTextField(
                 value = keyName,
                 onValueChange = {keyName = it},
-                label = { Text(text = "Data Label" ) }
+                label = { Text(text = "Data Label" ) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
             )
-            Button(onClick = onClickButton) {
-                Text(text = "next")
+            Button(
+                onClick = onClickButton,
+                modifier = Modifier
+                    .align(Alignment.End)
+            ) {
+                Text(text = "Next", fontSize = 20.sp)
             }
         }
     }

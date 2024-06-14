@@ -1,10 +1,7 @@
 package com.example.scalesseparatefileble.ui
 
 import android.content.pm.PackageManager
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -15,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +36,7 @@ fun FirstScreen(
         topBar = {
             TopAppBar(
                 backgroundColor = Color.LightGray,
-                title = { Text("FirstScreen") },
+                title = { Text("FirstScreen",fontSize = 28.sp) },
                 actions = {
                     IconButton(onClick = { onTapNextButton() }) {
                         Icon(Icons.Default.ArrowForward, contentDescription = "次へ")
@@ -70,40 +68,47 @@ fun BLEMain(
         color = MaterialTheme.colors.background
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text(text = "Hello World", fontSize = 50.sp)
-            Button(onClick = {
-                GlobalScope.launch {
-                    if(ContextCompat.checkSelfPermission(context, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED){
-                        bluetoothManager.initializeBluetooth()
-                    }else{
-                        bluetoothManager.startScanning()
+            Text(text = "はかりアプリ EJ-200B", fontSize = 60.sp)
+            Button(
+                onClick = {
+                    GlobalScope.launch {
+                        if(ContextCompat.checkSelfPermission(context, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED){
+                            bluetoothManager.initializeBluetooth()
+                        }else{
+                            bluetoothManager.startScanning()
+                        }
                     }
-                }
-            }) {
-                Text(
-                    text = "Scan"
-                )
+                },
+                modifier = Modifier
+                    .padding(vertical = 16.dp)) {
+                Text(text = "Scan", fontSize = 20.sp)
             }
             Button(onClick = {
-//                onClickButton()
                 GlobalScope.launch {
                     bluetoothManager.connectToDevice(deviceAddress.value)
                 }
-            }) {
-                Text(
-                    text = "Connect device"
-                )
+                },
+                modifier = Modifier
+                    .padding(vertical = 16.dp)) {
+                Text(text = "Connect device",fontSize = 20.sp)
             }
-            Button(onClick = onClickButton) {
-                Text(text = "next")
+            Button(
+                onClick = onClickButton,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+            ) {
+                Text(text = "Next",fontSize = 20.sp)
             }
             Text(
                 text = bluetoothManager.bluetoothUtilities.bleStateMessage.value,
-                fontSize = 20.sp
+                fontSize = 24.sp
             )
             DeviceList(viewModel = viewModel)
         }

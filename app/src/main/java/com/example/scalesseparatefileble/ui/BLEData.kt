@@ -29,7 +29,10 @@ fun ThirdScreen(
         topBar = {
             TopAppBar(
                 backgroundColor = Color.LightGray,
-                title = { Text("Label: ${viewModel.label.value}") },
+                title = { Text(
+                    "Label: ${viewModel.label.value}",
+                    fontSize = 28.sp
+                ) },
                 navigationIcon = {
                     IconButton(onClick = { onTapBackButton() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "戻る")
@@ -60,13 +63,20 @@ fun BLEData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onCl
         color = MaterialTheme.colors.background
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text(text = bluetoothManager.bluetoothUtilities.bleStateMessage.value, fontSize = 26.sp)
+            Text(
+                text = bluetoothManager.bluetoothUtilities.bleStateMessage.value,
+                fontSize = 28.sp)
             Box(
-                modifier = Modifier.size(420.dp),
+                modifier = Modifier
+                    .size(480.dp)
+                    .padding(vertical = 16.dp),
                 contentAlignment = Alignment.TopCenter
             ) {
                 Column(
@@ -76,9 +86,28 @@ fun BLEData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onCl
                 }
             }
             NotificationData(viewModel = viewModel, bluetoothManager = bluetoothManager)
-            ActionButton(viewModel = viewModel)
-            Button(onClick = onClickButton) {
-                Text(text = "next")
+            OutlinedButton(
+                onClick = { viewModel.undoRemoval() },
+                modifier = Modifier
+                    .padding(vertical = 8.dp)) {
+                Text("値を戻す",fontSize = 20.sp)
+            }
+            Button(
+                onClick = {
+                viewModel.saveDataCsv()
+//            Toast.makeText(context, "これはトーストです", Toast.LENGTH_SHORT).show()
+                },
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+            ) {
+                Text("保存",fontSize = 20.sp)
+            }
+            Button(
+                onClick = onClickButton,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+            ) {
+                Text(text = "Next",fontSize = 20.sp)
             }
         }
     }
@@ -89,31 +118,14 @@ private fun NotificationData(viewModel: SampleViewModel, bluetoothManager: Bluet
     val number = bluetoothManager.number
     Row{
         Text(text = number.value, fontSize = 35.sp)
-        Button(onClick = {
-            viewModel.addItem(number.value)
-        }) {
-            Text(text = "追加")
-        }
-    }
-}
-
-@Composable
-private fun ActionButton(viewModel: SampleViewModel){
-    val context = LocalContext.current
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        Button(onClick = { viewModel.undoRemoval() }) {
-            Text("値を戻す")
-        }
-        Button(onClick = {
-            viewModel.saveDataCsv()
-//            Toast.makeText(context, "これはトーストです", Toast.LENGTH_SHORT).show()
-        }) {
-            Text("保存")
+        Button(
+            onClick = {
+                viewModel.addItem(number.value)
+                      },
+            modifier = Modifier
+                .padding(start = 16.dp)
+        ) {
+            Text(text = "追加",fontSize = 20.sp)
         }
     }
 }

@@ -36,10 +36,16 @@ class SampleViewModel @Inject constructor(
     val items = mutableStateListOf<ColumnItem>()
     private val lastRemovedItems = mutableListOf<Pair<ColumnItem, Int>>() // アイテムとその元のインデックスを保持
 
+    val filePath = mutableStateOf<String>("")
+
     // 項目を追加
     fun addItem(value: String) {
         val newItem = ColumnItem(value = value)
         items.add(newItem)
+
+        // Get the max index, which is the last index of the list
+        val maxIndex = items.size
+        Toast.makeText(context, "${maxIndex}に値を追加", Toast.LENGTH_SHORT).show()
     }
 
     // 項目を削除
@@ -69,8 +75,8 @@ class SampleViewModel @Inject constructor(
 
     fun saveDataCsv(){
         try {
-            saveCsvFile.saveToCsv(items, context, label.value)
-            Toast.makeText(context, "保存しました", Toast.LENGTH_SHORT).show()
+            filePath.value = saveCsvFile.saveToCsv(items, context, label.value)
+            Toast.makeText(context, "${filePath.value}に保存しました", Toast.LENGTH_SHORT).show()
         }catch (e: IOException) {
             // Handle the exception and show a Toast for failure
             Toast.makeText(context, "保存できませんでした", Toast.LENGTH_SHORT).show()
@@ -81,9 +87,10 @@ class SampleViewModel @Inject constructor(
     fun readDataCsv(fileName: String){
         readingCsvFile.value = fileName
 
-        val externalStorageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-        val csvFile = File(externalStorageDir, fileName)
-        val data = saveCsvFile.readCsvFile(csvFile)
+//        val externalStorageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+//        val csvFile = File(externalStorageDir, fileName)
+//        val data = saveCsvFile.readCsvFile(context,csvFile)
+        val data = saveCsvFile.readCsvFile(context,fileName)
         // Print the returned array (just for demonstration)
         data.forEach { columnItem ->
             println("data: id=${columnItem.id}, text=${columnItem.value}")
