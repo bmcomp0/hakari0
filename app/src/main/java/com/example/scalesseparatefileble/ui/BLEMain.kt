@@ -91,9 +91,9 @@ fun BLEMain(
                 Text(text = "Scan", fontSize = 20.sp)
             }
             Button(onClick = {
-                GlobalScope.launch {
-                    bluetoothManager.connectToDevice(deviceAddress.value)
-                }
+                    GlobalScope.launch {
+                        bluetoothManager.connectToDevice(deviceAddress.value)
+                    }
                 },
                 modifier = Modifier
                     .padding(vertical = 16.dp)) {
