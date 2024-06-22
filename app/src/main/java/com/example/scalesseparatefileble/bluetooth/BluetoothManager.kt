@@ -1,5 +1,6 @@
 package com.example.scalesseparatefileble.bluetooth
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.*
 import android.bluetooth.le.BluetoothLeScanner
@@ -10,6 +11,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
@@ -43,6 +45,7 @@ class BluetoothManager(
 
     val bluetoothUtilities = BluetoothUtilities
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun initializeBluetooth() {
         // Check Bluetooth permissions
         checkBluetoothPermissions()
@@ -53,7 +56,29 @@ class BluetoothManager(
         // Initialization code...
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    private val requiredPermissions: Array<String> = arrayOf(
+        android.Manifest.permission.BLUETOOTH_CONNECT,
+        android.Manifest.permission.BLUETOOTH_SCAN,
+        android.Manifest.permission.ACCESS_FINE_LOCATION,
+        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        android.Manifest.permission.BLUETOOTH_ADVERTISE
+    )
+
+    @RequiresApi(Build.VERSION_CODES.S)
     fun startScanning() {
+        val allPermissionsGranted = requiredPermissions.all {
+            ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+        }
+
+        if (!allPermissionsGranted) {
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                requiredPermissions,
+                100
+            )
+        }
+
         // Scanning code...
         bluetoothLeScanner?.let { scanner ->
             if (!scanning) { // Stops scanning after a pre-defined scan period.
@@ -71,10 +96,23 @@ class BluetoothManager(
                 println("stopScan")
             }
         }
-
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun connectToDevice(deviceAddress: String) {
+        // Permission Check
+        val allPermissionsGranted = requiredPermissions.all {
+            ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+        }
+
+        if (!allPermissionsGranted) {
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                requiredPermissions,
+                100
+            )
+        }
+
         try {
             val device = bluetoothAdapter?.getRemoteDevice(deviceAddress)
             device?.connectGatt(context, false, mGattCallback)
@@ -84,16 +122,9 @@ class BluetoothManager(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     private fun checkBluetoothPermissions() {
-        val permissions = arrayOf(
-            android.Manifest.permission.BLUETOOTH_CONNECT,
-            android.Manifest.permission.BLUETOOTH_SCAN,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.BLUETOOTH_ADVERTISE
-        )
-
-        val permissionNotGrantedList = permissions.filter {
+        val permissionNotGrantedList = requiredPermissions.filter {
             ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
         }
 
@@ -113,15 +144,13 @@ class BluetoothManager(
         return bluetoothAdapter?.isEnabled == true
     }
 
+    @SuppressLint("MissingPermission")
     private val leScanCallback: ScanCallback = object : ScanCallback() {
         // Scan callback implementation...
         private val TAG = "result.device.name"
         private var device = ""
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
-            if( result == null){
-                println("result : null")
-            }
             if(result.device.name != null){
                 device = result.device.name
             }
@@ -144,6 +173,7 @@ class BluetoothManager(
         }
     }
 
+    @SuppressLint("MissingPermission")
     private val mGattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         // GATT callback implementation...
         private val TAG = "bluetooth.gatt.service"
