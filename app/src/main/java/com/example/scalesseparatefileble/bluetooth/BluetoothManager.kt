@@ -20,7 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
-import com.example.model.SampleViewModel
+import com.example.model.ViewModel
 import com.example.scalesseparatefileble.util.BluetoothUtilities
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -31,7 +31,7 @@ import java.util.UUID
 
 class BluetoothManager(
     private val context: Context,
-    private val viewModel: SampleViewModel
+    private val viewModel: ViewModel
 ) {
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private val bluetoothLeScanner: BluetoothLeScanner? = bluetoothAdapter?.bluetoothLeScanner

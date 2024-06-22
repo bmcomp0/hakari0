@@ -9,18 +9,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.model.SampleViewModel
+import com.example.model.ViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
 
 
 @Composable
 fun ThirdScreen(
-    viewModel: SampleViewModel = hiltViewModel(),
+    viewModel: ViewModel = hiltViewModel(),
     bluetoothManager: BluetoothManager,
     onTapNextButton: () -> Unit = {},
     onTapBackButton: () -> Unit = {}
@@ -57,7 +55,7 @@ fun ThirdScreen(
 }
 
 @Composable
-fun BLEData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onClickButton: () -> Unit, paddingValues: PaddingValues){
+fun BLEData(viewModel: ViewModel, bluetoothManager: BluetoothManager, onClickButton: () -> Unit, paddingValues: PaddingValues){
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -114,7 +112,7 @@ fun BLEData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager, onCl
 }
 
 @Composable
-private fun NotificationData(viewModel: SampleViewModel, bluetoothManager: BluetoothManager){
+private fun NotificationData(viewModel: ViewModel, bluetoothManager: BluetoothManager){
     val number = bluetoothManager.number
     Row{
         Text(text = number.value, fontSize = 35.sp)

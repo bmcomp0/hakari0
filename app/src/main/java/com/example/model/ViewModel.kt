@@ -5,16 +5,15 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Environment
 import android.widget.Toast
-import androidx.compose.runtime.*
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.scalesseparatefileble.data.SaveCsvFileWriter
 import com.example.scalesseparatefileble.util.ColumnItem
-import java.io.File
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
@@ -22,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 @SuppressLint("StaticFieldLeak")
-class SampleViewModel @Inject constructor(
+class ViewModel @Inject constructor(
         @ApplicationContext context: Context
     ) : ViewModel() {
     val devices = MutableLiveData<MutableList<String>>(mutableStateListOf())
@@ -75,8 +74,6 @@ class SampleViewModel @Inject constructor(
         }
     }
 
-
-
     fun saveDataCsv(){
         try {
             filePath.value = saveCsvFile.saveToCsv(items, context, label.value)
@@ -113,7 +110,7 @@ class SampleViewModel @Inject constructor(
         val data = saveCsvFile.getFiles(context)
         // Print the returned array (just for demonstration)
         data.forEach { text ->
-            println("$text")
+            println(text)
         }
         csvFileList.clear()  // Clear existing data
         csvFileList.addAll(data)  // Add new data

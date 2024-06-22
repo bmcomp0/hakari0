@@ -15,11 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.model.SampleViewModel
+import com.example.model.ViewModel
 
 @Composable
 fun SecondScreen(
-    viewModel: SampleViewModel = hiltViewModel(),
+    viewModel: ViewModel = hiltViewModel(),
     onTapNextButton: () -> Unit = {},
     onTapBackButton: () -> Unit = {}
 ) {
@@ -50,7 +50,7 @@ fun SecondScreen(
 }
 @Composable
 fun DataLabel(
-    viewModel: SampleViewModel,
+    viewModel: ViewModel,
     onClickButton: () -> Unit = {},
     paddingValues: PaddingValues
 ){

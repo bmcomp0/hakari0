@@ -16,11 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.model.SampleViewModel
+import com.example.model.ViewModel
 
 @Composable
 fun FourthScreen(
-    viewModel: SampleViewModel,
+    viewModel: ViewModel,
     onTapBackButton: () -> Unit = {},
     onTapNextButton: () -> Unit = {}
 ) {
@@ -56,7 +56,7 @@ fun FourthScreen(
 
 @Composable
 fun FileLists(
-    viewModel: SampleViewModel,
+    viewModel: ViewModel,
     onTapNextButton: () -> Unit = {},
     paddingValues: PaddingValues
 ) {

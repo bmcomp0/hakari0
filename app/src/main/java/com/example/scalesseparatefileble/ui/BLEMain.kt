@@ -1,8 +1,6 @@
 package com.example.scalesseparatefileble.ui
 
 import android.content.pm.PackageManager
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
@@ -18,14 +16,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.model.SampleViewModel
+import com.example.model.ViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun FirstScreen(
-    viewModel: SampleViewModel = hiltViewModel(),
+    viewModel: ViewModel = hiltViewModel(),
     bluetoothManager: BluetoothManager,
     onTapNextButton: () -> Unit = {}
 ) {
@@ -58,7 +56,7 @@ fun FirstScreen(
 
 @Composable
 fun BLEMain(
-    viewModel: SampleViewModel,
+    viewModel: ViewModel,
     bluetoothManager: BluetoothManager,
     onClickButton: () -> Unit = {},
     paddingValues: PaddingValues
@@ -118,7 +116,7 @@ fun BLEMain(
 }
 
 @Composable
-fun DeviceList(viewModel: SampleViewModel) {
+fun DeviceList(viewModel: ViewModel) {
     val items = viewModel.devices
 
     Column {

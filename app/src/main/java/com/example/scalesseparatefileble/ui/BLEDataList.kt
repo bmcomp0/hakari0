@@ -19,11 +19,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scalesseparatefileble.util.CustomSwipeToDismiss
-import com.example.model.SampleViewModel
+import com.example.model.ViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ContentScreen(viewModel: SampleViewModel) {
+fun ContentScreen(viewModel: ViewModel) {
     val listState = rememberLazyListState()
     val items = viewModel.items
 

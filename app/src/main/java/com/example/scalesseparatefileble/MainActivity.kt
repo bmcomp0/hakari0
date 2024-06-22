@@ -8,7 +8,7 @@ import androidx.compose.runtime.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.model.SampleViewModel
+import com.example.model.ViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
 import com.example.scalesseparatefileble.ui.*
 
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel = SampleViewModel(this@MainActivity)
+        val viewModel = ViewModel(this@MainActivity)
         val bluetoothManager by lazy { BluetoothManager(this, viewModel) }
         setContent {
             NavControllers(viewModel = viewModel, bluetoothManager = bluetoothManager)
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NavControllers(viewModel: SampleViewModel, bluetoothManager: BluetoothManager) {
+fun NavControllers(viewModel: ViewModel, bluetoothManager: BluetoothManager) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "First") {
         composable(route = "First") {

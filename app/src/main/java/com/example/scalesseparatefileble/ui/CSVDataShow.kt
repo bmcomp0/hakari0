@@ -13,12 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scalesseparatefileble.util.ColumnItem
-import com.example.model.SampleViewModel
+import com.example.model.ViewModel
 
 
 @Composable
 fun FifthScreen(
-    viewModel: SampleViewModel = hiltViewModel(),
+    viewModel: ViewModel = hiltViewModel(),
     onTapBackButton: () -> Unit = {}
 ) {
     Scaffold(
@@ -43,7 +43,7 @@ fun FifthScreen(
 
 @Composable
 fun CSVDataShow(
-    viewModel: SampleViewModel,
+    viewModel: ViewModel,
     paddingValues: PaddingValues
 ) {
     val csvDataList = viewModel.csvDataList
