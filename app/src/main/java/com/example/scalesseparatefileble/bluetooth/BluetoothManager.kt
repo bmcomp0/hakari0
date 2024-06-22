@@ -2,7 +2,11 @@ package com.example.scalesseparatefileble.bluetooth
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.bluetooth.*
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothProfile
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
@@ -11,7 +15,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
@@ -19,11 +22,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.model.SampleViewModel
 import com.example.scalesseparatefileble.util.BluetoothUtilities
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.util.*
+import java.util.UUID
 
 class BluetoothManager(
     private val context: Context,
@@ -45,7 +49,6 @@ class BluetoothManager(
 
     val bluetoothUtilities = BluetoothUtilities
 
-    @RequiresApi(Build.VERSION_CODES.S)
     fun initializeBluetooth() {
         // Check Bluetooth permissions
         checkBluetoothPermissions()
@@ -56,7 +59,6 @@ class BluetoothManager(
         // Initialization code...
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     private val requiredPermissions: Array<String> = arrayOf(
         android.Manifest.permission.BLUETOOTH_CONNECT,
         android.Manifest.permission.BLUETOOTH_SCAN,
@@ -65,7 +67,6 @@ class BluetoothManager(
         android.Manifest.permission.BLUETOOTH_ADVERTISE
     )
 
-    @RequiresApi(Build.VERSION_CODES.S)
     fun startScanning() {
         val allPermissionsGranted = requiredPermissions.all {
             ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
@@ -98,7 +99,6 @@ class BluetoothManager(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     fun connectToDevice(deviceAddress: String) {
         // Permission Check
         val allPermissionsGranted = requiredPermissions.all {
@@ -122,7 +122,6 @@ class BluetoothManager(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     private fun checkBluetoothPermissions() {
         val permissionNotGrantedList = requiredPermissions.filter {
             ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
@@ -173,6 +172,7 @@ class BluetoothManager(
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingPermission")
     private val mGattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         // GATT callback implementation...
@@ -189,7 +189,7 @@ class BluetoothManager(
                 Log.d("$TAG.callback", "切断しました")
                 bluetoothUtilities.bleStateMessageChange(4)
                 flag.value = 0
-            } else if (status == 133 && newState == BluetoothProfile.STATE_DISCONNECTED) {
+            } else if (status == 133) {
                 bluetoothUtilities.bleStateMessageChange(5)
                 Log.d("$TAG.error", "133 error")
 //                connectDevice()
@@ -201,7 +201,7 @@ class BluetoothManager(
 //            Log.d(TAG, "$gatt")
             Log.d("$TAG.status", "$status")
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                var bleList = gatt?.services
+                val bleList = gatt?.services
                 println(bleList)
                 println(bleList?.get(2)?.uuid)
 
@@ -210,7 +210,7 @@ class BluetoothManager(
                     gatt?.getService(UUID.fromString("55725ac1-066c-48b5-8700-2d9fb3603c5e"))
                 if (service != null) {
                     //characteristic等の取得
-                    var bleCharList = service.characteristics
+                    val bleCharList = service.characteristics
                     println(bleCharList?.get(0)?.uuid)
                     println(bleCharList?.get(0)?.properties)
                     if (bleCharList?.get(0)?.properties == 16) {
@@ -225,7 +225,7 @@ class BluetoothManager(
 
                         //notifyの設定
                         val registered =
-                            gatt?.setCharacteristicNotification(gattNotifyCharacteristic, true)
+                            gatt.setCharacteristicNotification(gattNotifyCharacteristic, true)
                         Log.d("bluetooth.gatt.notify", "$registered")
                     } else
                         Log.d(TAG, "notify does not found")
@@ -236,6 +236,7 @@ class BluetoothManager(
                 Log.d(TAG, "GATT server can't get")
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onCharacteristicRead(
             gatt: BluetoothGatt?,
             characteristic: BluetoothGattCharacteristic?,
@@ -327,6 +328,7 @@ class BluetoothManager(
             }
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onCharacteristicChanged(
             gatt: BluetoothGatt?,
             characteristic: BluetoothGattCharacteristic?

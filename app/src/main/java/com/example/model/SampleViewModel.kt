@@ -1,6 +1,7 @@
 package com.example.model
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -20,8 +21,9 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
+@SuppressLint("StaticFieldLeak")
 class SampleViewModel @Inject constructor(
-    @ApplicationContext context: Context
+        @ApplicationContext context: Context
     ) : ViewModel() {
     val devices = MutableLiveData<MutableList<String>>(mutableStateListOf())
 //    val dataList = mutableStateListOf<String>()
@@ -37,6 +39,16 @@ class SampleViewModel @Inject constructor(
     private val lastRemovedItems = mutableListOf<Pair<ColumnItem, Int>>() // アイテムとその元のインデックスを保持
 
     val filePath = mutableStateOf<String>("")
+
+    init {
+        // Request WRITE_EXTERNAL_STORAGE permission
+        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        val requestCode = 123 // You can use any unique code
+        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(context as Activity, arrayOf(permission), requestCode)
+        }
+        saveCsvFile.getFiles(context)
+    }
 
     // 項目を追加
     fun addItem(value: String) {
@@ -63,15 +75,7 @@ class SampleViewModel @Inject constructor(
         }
     }
 
-    init {
-        // Request WRITE_EXTERNAL_STORAGE permission
-        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-        val requestCode = 123 // You can use any unique code
-        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(context as Activity, arrayOf(permission), requestCode)
-        }
-        saveCsvFile.getFiles(context)
-    }
+
 
     fun saveDataCsv(){
         try {
