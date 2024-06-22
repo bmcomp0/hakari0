@@ -17,12 +17,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -30,10 +30,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -76,7 +73,7 @@ fun FirstScreen(
             ButtonSheetContent(
                 viewModel = viewModel,
                 onClickButton = {
-                    viewModel.addItem(viewModel.label.value)
+                    navigationController.navigate("Third")
                     coroutineScope.launch {
                         sheetState.hide()
                     }
@@ -159,7 +156,8 @@ fun BLEMain(
                     modifier = Modifier
                         .padding(vertical = 16.dp)
                         .height(48.dp),
-                    shape = RoundedCornerShape(50)
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50))
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = "Next", fontSize = 20.sp, color = Color.White)
@@ -206,7 +204,8 @@ fun ConnectDeviceView(
                         .height(48.dp)
                         .weight(1f),
                     shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(0.dp)
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50))
                 ) {
                     Text(text = "Scan", fontSize = 20.sp, color = Color.White)
                 }
@@ -219,7 +218,8 @@ fun ConnectDeviceView(
                         .height(48.dp)
                         .weight(1f),
                     shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(0.dp)
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50))
                 ) {
                     Text(text = "Connect", fontSize = 20.sp, color = Color.White)
                 }
@@ -273,51 +273,5 @@ fun DeviceList(
                 Text(text = device, fontSize = 8.sp, color = Color.Black)
             }
         }
-    }
-}
-
-@Composable
-fun ButtonSheetContent(
-    viewModel: ViewModel,
-    onClickButton: () -> Unit = {},
-    closeButtonOnClick: () -> Unit = {},
-) {
-    var keyName by remember { viewModel.label }
-
-    Column(
-        modifier = Modifier
-            .padding(start = 12.dp, bottom = 24.dp)
-            .height(300.dp),
-    ) {
-        Row {
-            Text("Enter Label Name")
-            Button(onClick = { closeButtonOnClick() }) {
-                Text("Close")
-            }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            OutlinedTextField(
-                value = keyName,
-                onValueChange = { keyName = it },
-                label = { Text(text = "Data Label") },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
-            )
-            Button(
-                onClick = onClickButton,
-                modifier = Modifier
-                    .align(Alignment.End)
-            ) {
-                Text(text = "Next", fontSize = 20.sp)
-            }
-        }
-
     }
 }
