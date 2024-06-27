@@ -1,35 +1,30 @@
 package com.example.scalesseparatefileble.ui
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.model.ViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -44,48 +39,17 @@ fun ThirdScreen(
         bluetoothManager.initializeBluetooth()
     }
 
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.HalfExpanded)
-
-    val coroutineScope = rememberCoroutineScope()
-    BackHandler(sheetState.isVisible) {
-        coroutineScope.launch { sheetState.show() }
-    }
-
-    ModalBottomSheetLayout(
-        sheetContent = {
-            NotificationData(viewModel = viewModel, bluetoothManager = bluetoothManager)
-            Button(
-                onClick = { viewModel.undoRemoval() },
-                modifier = Modifier
-                    .padding(vertical = 8.dp)) {
-                Text("値を戻す",fontSize = 20.sp)
-            }
-            Button(
-                onClick = {
-                    viewModel.saveDataCsv()
-//            Toast.makeText(context, "これはトーストです", Toast.LENGTH_SHORT).show()
-                },
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-            ) {
-                Text("保存",fontSize = 20.sp)
-            }
-            Button(
-                onClick = onTapNextButton,
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-            ) {
-                Text(text = "Next",fontSize = 20.sp)
-            }
-        },
-        sheetState = sheetState,
-        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+    Box(
         modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-            .navigationBarsPadding()
+            .fillMaxSize(), // てきとう
+        contentAlignment = Alignment.BottomCenter
     ) {
         BLEData(
+            viewModel = viewModel,
+            bluetoothManager = bluetoothManager
+        )
+
+        AddDataSheet(
             viewModel = viewModel,
             bluetoothManager = bluetoothManager
         )
@@ -93,7 +57,7 @@ fun ThirdScreen(
 }
 
 @Composable
-fun BLEData(viewModel: ViewModel, bluetoothManager: BluetoothManager){
+fun BLEData(viewModel: ViewModel, bluetoothManager: BluetoothManager) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -107,35 +71,71 @@ fun BLEData(viewModel: ViewModel, bluetoothManager: BluetoothManager){
         ) {
             Text(text = viewModel.label.value, fontSize = 28.sp)
 
-            Box(
-                modifier = Modifier
-                    .size(480.dp)
-                    .padding(vertical = 16.dp),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    ContentScreen(viewModel = viewModel)
-                }
-            }
+            ContentScreen(viewModel = viewModel)
         }
     }
 }
 
 @Composable
-private fun NotificationData(viewModel: ViewModel, bluetoothManager: BluetoothManager){
-    val number = bluetoothManager.number
-    Row{
-        Text(text = number.value, fontSize = 35.sp)
-        Button(
-            onClick = {
-                viewModel.addItem(number.value)
-                      },
-            modifier = Modifier
-                .padding(start = 16.dp)
+fun AddDataSheet(
+    viewModel: ViewModel,
+    bluetoothManager: BluetoothManager
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .shadow(
+                ambientColor = Color(0xFF000000),
+                elevation = 16.dp,
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+            ),
+        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        color = Color(0xFFFFFFFF)
+    ) {
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "追加",fontSize = 20.sp)
+            Row {
+                Text(text = bluetoothManager.number.value, fontSize = 35.sp)
+                Button(
+                    onClick = {
+                        viewModel.addItem(bluetoothManager.number.value)
+                    },
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                ) {
+                    Text(text = "追加", fontSize = 20.sp)
+                }
+            }
+
+            Button(
+                onClick = { viewModel.undoRemoval() },
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+            ) {
+                Text("値を戻す", fontSize = 20.sp)
+            }
+
+            Button(
+                onClick = {
+                    viewModel.saveDataCsv()
+                },
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+            ) {
+                Text("保存", fontSize = 20.sp)
+            }
+
+            Button(
+                onClick = { },
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+            ) {
+                Text(text = "Next", fontSize = 20.sp)
+            }
         }
     }
 }

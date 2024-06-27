@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,72 +43,68 @@ fun ContentScreen(viewModel: ViewModel) {
     val listState = rememberLazyListState()
     val items = viewModel.items
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            state = listState
-        ) {
-            itemsIndexed(items = viewModel.items, key = { _, item -> item.id }) { index, item ->
-                val dismissState = rememberDismissState(
-                    confirmStateChange = {
-                        if (it == DismissValue.DismissedToStart) {
-                            viewModel.removeItem(item)
-                        }
-                        true
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        state = listState
+    ) {
+        itemsIndexed(items = viewModel.items, key = { _, item -> item.id }) { index, item ->
+            val dismissState = rememberDismissState(
+                confirmStateChange = {
+                    if (it == DismissValue.DismissedToStart) {
+                        viewModel.removeItem(item)
                     }
-                )
+                    true
+                }
+            )
 
-                CustomSwipeToDismiss(
-                    state = dismissState,
-                    directions = setOf(DismissDirection.EndToStart),
-                    dismissThresholds =  { FractionalThreshold(0.3f) },
-                    background = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(14.dp)) // 最初にclipを適用
-                                .background(Color.Red)
-                                .padding(5.dp), // clipの後にpaddingを適用
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.padding(end = 20.dp)
-                            )
-                        }
-                    },
-                    dismissContent = {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                                .background(Color(0xFFF0F0F0), RoundedCornerShape(12.dp))
-                                .padding(horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = "${index + 1}. ", style = MaterialTheme.typography.h6, modifier = Modifier.weight(1f))
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(text = item.value, style = MaterialTheme.typography.body1, modifier = Modifier.weight(2f))
-                        }
-
+            CustomSwipeToDismiss(
+                state = dismissState,
+                directions = setOf(DismissDirection.EndToStart),
+                dismissThresholds =  { FractionalThreshold(0.3f) },
+                background = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(14.dp)) // 最初にclipを適用
+                            .background(Color.Red)
+                            .padding(5.dp), // clipの後にpaddingを適用
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.padding(end = 20.dp)
+                        )
                     }
-                )
-            }
-
-
+                },
+                dismissContent = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .background(Color(0xFFF0F0F0), RoundedCornerShape(12.dp))
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "${index + 1}. ", style = MaterialTheme.typography.h6, modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(text = item.value, style = MaterialTheme.typography.body1, modifier = Modifier.weight(2f))
+                    }
+                }
+            )
         }
+    }
 
-        LaunchedEffect(items){
-            if(items.isNotEmpty()){
-                listState.animateScrollBy(
-                    value = 200f,
-                    animationSpec = tween(durationMillis = 1000)
-                )
-            }
+    LaunchedEffect(items){
+        if(items.isNotEmpty()){
+            listState.animateScrollBy(
+                value = 200f,
+                animationSpec = tween(durationMillis = 1000)
+            )
         }
     }
 }
