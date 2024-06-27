@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,10 +50,17 @@ fun ThirdScreen(
             bluetoothManager = bluetoothManager
         )
 
-        AddDataSheet(
-            viewModel = viewModel,
-            bluetoothManager = bluetoothManager
-        )
+        Column {
+            BottomSheet(
+                viewModel = viewModel,
+                bluetoothManager = bluetoothManager
+            )
+            BottomNavigation(
+                viewModel = viewModel,
+                onTapBackButton = onTapBackButton,
+                onTapNextButton = onTapNextButton
+            )
+        }
     }
 }
 
@@ -77,7 +85,7 @@ fun BLEData(viewModel: ViewModel, bluetoothManager: BluetoothManager) {
 }
 
 @Composable
-fun AddDataSheet(
+fun BottomSheet(
     viewModel: ViewModel,
     bluetoothManager: BluetoothManager
 ) {
@@ -87,7 +95,7 @@ fun AddDataSheet(
             .height(200.dp)
             .shadow(
                 ambientColor = Color(0xFF000000),
-                elevation = 16.dp,
+                elevation = 32.dp,
                 shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
             ),
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -110,32 +118,48 @@ fun AddDataSheet(
                     Text(text = "追加", fontSize = 20.sp)
                 }
             }
-
-            Button(
-                onClick = { viewModel.undoRemoval() },
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-            ) {
-                Text("値を戻す", fontSize = 20.sp)
-            }
-
-            Button(
-                onClick = {
-                    viewModel.saveDataCsv()
-                },
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-            ) {
-                Text("保存", fontSize = 20.sp)
-            }
-
-            Button(
-                onClick = { },
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-            ) {
-                Text(text = "Next", fontSize = 20.sp)
-            }
         }
     }
+}
+
+@Composable
+fun BottomNavigation(
+    viewModel: ViewModel,
+    onTapBackButton: () -> Unit,
+    onTapNextButton: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        color = Color(0xFFFFFFFF)
+    ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            BackButton(
+                backButtonOnClick = onTapBackButton
+            )
+
+            SaveButton(
+                saveButtonOnClick = {
+                    viewModel.saveDataCsv()
+                }
+            )
+
+            NextButton(
+                nextButtonOnClick = onTapNextButton
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewThirdScreen() {
+//    bottomNavigation()
 }
