@@ -224,7 +224,7 @@ fun ConnectDeviceView(
                         .weight(1f),
                     shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C))
                 ) {
                     Text(text = "Scan", fontSize = 20.sp, color = Color.White)
                 }
@@ -238,7 +238,7 @@ fun ConnectDeviceView(
                         .weight(1f),
                     shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C))
                 ) {
                     Text(text = "Connect", fontSize = 20.sp, color = Color.White)
                 }

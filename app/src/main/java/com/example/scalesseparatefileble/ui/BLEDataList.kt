@@ -39,7 +39,7 @@ import com.example.scalesseparatefileble.util.CustomSwipeToDismiss
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ContentScreen(viewModel: ViewModel) {
+fun BLEDataList(viewModel: ViewModel) {
     val listState = rememberLazyListState()
     val items = viewModel.items
 

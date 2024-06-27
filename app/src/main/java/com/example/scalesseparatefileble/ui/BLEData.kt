@@ -1,19 +1,27 @@
 package com.example.scalesseparatefileble.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -42,16 +50,19 @@ fun ThirdScreen(
 
     Box(
         modifier = Modifier
-            .fillMaxSize(), // てきとう
+            .fillMaxWidth(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        BLEData(
-            viewModel = viewModel,
-            bluetoothManager = bluetoothManager
-        )
 
         Column {
-            BottomSheet(
+            BLEData(
+                viewModel = viewModel,
+                bluetoothManager = bluetoothManager
+            )
+        }
+
+        Column {
+            AddDataSheet(
                 viewModel = viewModel,
                 bluetoothManager = bluetoothManager
             )
@@ -79,13 +90,13 @@ fun BLEData(viewModel: ViewModel, bluetoothManager: BluetoothManager) {
         ) {
             Text(text = viewModel.label.value, fontSize = 28.sp)
 
-            ContentScreen(viewModel = viewModel)
+            BLEDataList(viewModel = viewModel)
         }
     }
 }
 
 @Composable
-fun BottomSheet(
+fun AddDataSheet(
     viewModel: ViewModel,
     bluetoothManager: BluetoothManager
 ) {
@@ -101,21 +112,56 @@ fun BottomSheet(
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         color = Color(0xFFFFFFFF)
     ) {
-        Column(
-            modifier = Modifier,
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row {
-                Text(text = bluetoothManager.number.value, fontSize = 35.sp)
-                Button(
-                    onClick = {
-                        viewModel.addItem(bluetoothManager.number.value)
-                    },
-                    modifier = Modifier
-                        .padding(start = 16.dp)
+        Surface(
+            modifier = Modifier
+                .padding(32.dp)
+                .background(Color.White, RoundedCornerShape(12.dp))
+                .fillMaxWidth()
+                .height(152.dp)
+                .shadow(
+                    ambientColor = Color(0xFFFFFFFF),
+                    elevation = 4.dp,
+                    shape = RoundedCornerShape(12.dp)
+                )
+        ){
+            Box(
+                modifier = Modifier
+                    .background(Color.White, RoundedCornerShape(12.dp))
+                    .fillMaxWidth()
+                    .height(152.dp)
+            ){
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(text = "追加", fontSize = 20.sp)
+                    Text(
+                        text = bluetoothManager.number.value,
+                        fontSize = 48.sp,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        color = Color.Black,
+                        modifier = Modifier
+                            .weight(0.6f)
+                            .padding(start = 16.dp),
+
+                        )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Button(
+                        onClick = {
+                            viewModel.addItem(bluetoothManager.number.value)
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
+                        shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.5f)
+                    ) {
+                        Icon(
+                            modifier = Modifier.fillMaxSize(),
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add",
+                            tint = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -161,5 +207,5 @@ fun BottomNavigation(
 @Preview
 @Composable
 fun PreviewThirdScreen() {
-//    bottomNavigation()
+
 }

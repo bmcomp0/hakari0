@@ -35,7 +35,7 @@ fun NextButtonWithText(
         modifier = Modifier
             .height(48.dp),
         shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Next", fontSize = 20.sp, color = Color.White)
@@ -63,7 +63,7 @@ fun NextButton(
             .height(48.dp),
         contentPadding = PaddingValues(5.dp),
         shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -88,7 +88,7 @@ fun BackButton(
             .width(48.dp),
         contentPadding = PaddingValues(5.dp),
         shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -113,7 +113,7 @@ fun SaveButton(
             .height(70.dp),
         contentPadding = PaddingValues(10.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -136,7 +136,7 @@ fun HomeButton(
             .height(70.dp),
         contentPadding = PaddingValues(10.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
