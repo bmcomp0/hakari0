@@ -53,13 +53,15 @@ fun NavControllers(viewModel: ViewModel, bluetoothManager: BluetoothManager) {
             FourthScreen(
                 viewModel = viewModel,
                 onTapBackButton = { navController.navigate("Third") },
-                onTapNextButton = { navController.navigate("Fifth") }
+                onTapNextButton = { navController.navigate("Fifth") },
+                onTapHomeButton = { navController.navigate("First") }
             )
         }
         composable(route = "Fifth"){
             FifthScreen(
                 viewModel = viewModel,
-                onTapBackButton = { navController.navigate("Fourth") }
+                onTapBackButton = { navController.navigate("Fourth") },
+                onTapHomeButton = { navController.navigate("First") }
             )
         }
     }

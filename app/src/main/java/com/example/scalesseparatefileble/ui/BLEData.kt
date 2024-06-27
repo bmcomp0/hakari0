@@ -169,7 +169,7 @@ fun AddDataSheet(
 }
 
 @Composable
-fun BottomNavigation(
+private fun BottomNavigation(
     viewModel: ViewModel,
     onTapBackButton: () -> Unit,
     onTapNextButton: () -> Unit
