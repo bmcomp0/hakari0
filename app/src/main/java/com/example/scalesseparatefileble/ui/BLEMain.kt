@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,14 +35,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.model.ViewModel
+import com.example.scalesseparatefileble.R
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -87,7 +93,10 @@ fun FirstScreen(
         },
         sheetState = sheetState,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+            .navigationBarsPadding()
     ) {
         BLEMain(
             viewModel = viewModel,
@@ -122,10 +131,12 @@ fun BLEMain(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text(text = "はかりアプリ EJ-200B", fontSize = 60.sp)
 
-            ConnectDeviceView(
-                devices = viewModel.devices.value?.toList() ?: listOf(),
+            TitleView(title = "重量記録アプリ　EJ-200B", appVersion = "v1.0.0")
+
+            ConnectDeviceView( // TODO BLEデバイスのみ表示
+//                devices = viewModel.devices.value?.toList() ?: listOf("device_1", "device_2", "device_3", "device_4"),
+                devices = listOf("device_1", "device_2", "device_3", "device_4"),
                 scanButtonOnClick = {
                     GlobalScope.launch {
                         if(ContextCompat.checkSelfPermission(context, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED){
@@ -142,10 +153,13 @@ fun BLEMain(
                 },
             )
 
+            // BLE ステータス
             Text(
                 text = bluetoothManager.bluetoothUtilities.bleStateMessage.value,
                 fontSize = 24.sp
             )
+
+            DeviceList(devices = viewModel.devices.value?.toList() ?: listOf())
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -170,10 +184,28 @@ fun BLEMain(
                     }
                 }
             }
-
         }
     }
 }
+
+@Composable
+fun TitleView(
+    title: String,
+    appVersion: String,
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+
+    ) {
+        Text(text = title, fontSize = 32.sp)
+        Text(text = appVersion, fontSize = 16.sp)
+    }
+}
+
 @Composable
 fun ConnectDeviceView(
     devices: List<String>,
@@ -181,9 +213,15 @@ fun ConnectDeviceView(
     connectButtonOnClick: () -> Unit = {},
 ) {
     Surface(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier
+            .padding(16.dp)
+            .shadow(
+                ambientColor = Color(0xFF000000),
+                elevation = 8.dp,
+                shape = RoundedCornerShape(12.dp)
+            ),
         shape = RoundedCornerShape(12.dp),
-        color = Color(0xFFEDEDED)
+        color = Color(0xFFFFFFFF)
     ) {
         Column(
             modifier = Modifier
@@ -245,11 +283,11 @@ fun ConnectableDeviceList(
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-//                Icon(　// TODO アイコン追加
-//                    painter = painterResource(id = R.drawable.ic_device),
-//                    contentDescription = "Device Icon",
-//                    modifier = Modifier.size(24.dp)
-//                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_device),
+                    contentDescription = "Bluetooth",
+                    tint = Color(0xFF75787A)
+                )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(text = device, fontSize = 16.sp, color = Color.Black)
             }
@@ -275,3 +313,18 @@ fun DeviceList(
         }
     }
 }
+
+@Preview
+@Composable
+fun PreviewFirstScreen() {
+    Column {
+        TitleView(title = "はかりアプリ EJ-200B", appVersion = "v1.0.0")
+
+        ConnectDeviceView(
+            devices = listOf("device_1", "device_2", "device_3", "device_4"),
+            scanButtonOnClick = {},
+            connectButtonOnClick = {},
+        )
+    }
+}
+
