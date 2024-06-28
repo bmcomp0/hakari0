@@ -37,7 +37,7 @@ class ViewModel @Inject constructor(
     val items = mutableStateListOf<ColumnItem>()
     private val lastRemovedItems = mutableListOf<Pair<ColumnItem, Int>>() // アイテムとその元のインデックスを保持
 
-    val filePath = mutableStateOf<String>("")
+    val filePath = mutableStateOf<String>("") // TODO 保存時に更新ではなく、LatestのCSVファイル名を表示
 
     init {
         // Request WRITE_EXTERNAL_STORAGE permission

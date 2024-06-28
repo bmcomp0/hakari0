@@ -2,6 +2,7 @@ package com.example.scalesseparatefileble.ui
 
 import android.content.pm.PackageManager
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -120,51 +122,72 @@ fun BLEMain(
     val context = LocalContext.current
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        color = MaterialTheme.colors.background,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-
-            TitleView(title = "重量記録アプリ　EJ-200B", appVersion = "v1.0.0")
-
-            ConnectDeviceView( // TODO BLEデバイスのみ表示
-//                devices = viewModel.devices.value?.toList() ?: listOf("device_1", "device_2", "device_3", "device_4"),
-                devices = listOf("device_1", "device_2", "device_3", "device_4"),
-                scanButtonOnClick = {
-                    GlobalScope.launch {
-                        if(ContextCompat.checkSelfPermission(context, android.Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED){
-                            bluetoothManager.initializeBluetooth()
-                        }else{
-                            bluetoothManager.startScanning()
-                        }
-                    }
-                },
-                connectButtonOnClick = {
-                    GlobalScope.launch {
-                        bluetoothManager.connectToDevice(deviceAddress.value)
-                    }
-                },
-            )
-
-            // BLE ステータス
-            Text(
-                text = bluetoothManager.bluetoothUtilities.bleStateMessage.value,
-                fontSize = 24.sp
-            )
-
-            DeviceList(devices = viewModel.devices.value?.toList() ?: listOf())
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
-                NextButtonWithText(nextButtonOnClick = nextButtonOnClick)
+
+                TitleView(title = "重量記録アプリ　EJ-200B", appVersion = "v1.0.0")
+
+                ConnectDeviceView(
+                    // TODO BLEデバイスのみ表示
+                    devices = listOf("device_1", "device_2", "device_3", "device_4"),
+                    scanButtonOnClick = {
+                        GlobalScope.launch {
+                            if (ContextCompat.checkSelfPermission(
+                                    context,
+                                    android.Manifest.permission.BLUETOOTH_SCAN
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                bluetoothManager.initializeBluetooth()
+                            } else {
+                                bluetoothManager.startScanning()
+                            }
+                        }
+                    },
+                    connectButtonOnClick = {
+                        GlobalScope.launch {
+                            bluetoothManager.connectToDevice(deviceAddress.value)
+                        }
+                    },
+                )
+
+                // BLE ステータス
+                Text(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(48.dp),
+                    text = bluetoothManager.bluetoothUtilities.bleStateMessage.value,
+                    fontSize = 24.sp,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    NextButtonWithText(nextButtonOnClick = nextButtonOnClick)
+                }
+
+                DeviceList(devices = viewModel.devices.value?.toList() ?: listOf())
             }
+
+            Image(
+                painter = painterResource(id = R.drawable.bm_logo),
+                contentDescription = "BM Logo",
+            )
         }
     }
 }
@@ -281,16 +304,13 @@ fun DeviceList(
     devices: List<String>,
 ) {
     LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(vertical = 8.dp),
     ) {
         itemsIndexed(devices) { _, device ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = device, fontSize = 8.sp, color = Color.Black)
-            }
+            Text(text = device, fontSize = 16.sp, color = Color.Gray, textAlign = TextAlign.Center)
         }
     }
 }
