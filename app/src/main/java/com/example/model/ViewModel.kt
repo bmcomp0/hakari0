@@ -56,7 +56,7 @@ class ViewModel @Inject constructor(
 
         // Get the max index, which is the last index of the list
         val maxIndex = items.size
-        Toast.makeText(context, "${maxIndex}に値を追加", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "${maxIndex}に値を追加", Toast.LENGTH_SHORT).show()
     }
 
     // 項目を削除

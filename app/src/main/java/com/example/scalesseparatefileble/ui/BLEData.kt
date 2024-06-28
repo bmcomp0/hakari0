@@ -48,49 +48,37 @@ fun ThirdScreen(
         bluetoothManager.initializeBluetooth()
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-
-        Column {
-            BLEData(
-                viewModel = viewModel,
-                bluetoothManager = bluetoothManager
-            )
-        }
-
-        Column {
-            AddDataSheet(
-                viewModel = viewModel,
-                bluetoothManager = bluetoothManager
-            )
-            BottomNavigation(
-                viewModel = viewModel,
-                onTapBackButton = onTapBackButton,
-                onTapNextButton = onTapNextButton
-            )
-        }
-    }
-}
-
-@Composable
-fun BLEData(viewModel: ViewModel, bluetoothManager: BluetoothManager) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = viewModel.label.value, fontSize = 28.sp)
+            Text(text = viewModel.label.value, fontSize = 28.sp) // ラベルタイトル
 
-            BLEDataList(viewModel = viewModel)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalArrangement = Arrangement.Top
+            ) {
+                BLEDataList(viewModel = viewModel)
+            }
+
+            Column {
+                AddDataSheet(
+                    viewModel = viewModel,
+                    bluetoothManager = bluetoothManager
+                )
+                BottomNavigation(
+                    viewModel = viewModel,
+                    onTapBackButton = onTapBackButton,
+                    onTapNextButton = onTapNextButton
+                )
+            }
         }
     }
 }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,9 +44,9 @@ fun BLEDataList(viewModel: ViewModel) {
 
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxWidth(),
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
         state = listState
     ) {
         itemsIndexed(items = viewModel.items, key = { _, item -> item.id }) { index, item ->
@@ -67,7 +66,7 @@ fun BLEDataList(viewModel: ViewModel) {
                 background = {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth()
                             .clip(RoundedCornerShape(14.dp)) // 最初にclipを適用
                             .background(Color.Red)
                             .padding(5.dp), // clipの後にpaddingを適用
