@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -71,14 +72,6 @@ fun FileLists(
 
     val files = viewModel.csvFileList
 
-    FileList(files = files) { fileName ->
-        viewModel.readDataCsv(fileName)
-        onTapNextButton()
-    }
-}
-
-@Composable
-fun FileList(files: List<String>, onFileClick: (String) -> Unit) {
     LazyColumn {
         items(files) { fileName ->
             Text(
@@ -86,8 +79,14 @@ fun FileList(files: List<String>, onFileClick: (String) -> Unit) {
                 fontSize = 20.sp,
                 modifier = Modifier
                     .padding(16.dp)
-                    .clickable { onFileClick(fileName) }
+                    .clickable {
+                        viewModel.readDataCsv(fileName)
+                        onTapNextButton()
+                    }
             )
+            if (fileName != files.last()) {
+                Divider(color = Color.LightGray, thickness = 1.dp)
+            }
         }
     }
 }

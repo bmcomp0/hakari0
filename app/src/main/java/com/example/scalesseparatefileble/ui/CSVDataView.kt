@@ -68,7 +68,15 @@ fun CSVFileDataView(
 
 @Composable
 fun CsvDataListScreen(dataList: List<ColumnItem>) {
-    // Scrollable column to display the list
+    if(dataList.isEmpty()) {
+        Text(
+            text = "No data",
+            style = MaterialTheme.typography.h6,
+            modifier = Modifier.padding(16.dp)
+        )
+        return
+    }
+
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(16.dp)
