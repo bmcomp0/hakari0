@@ -27,6 +27,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 import java.util.UUID
 
 class BluetoothManager(
@@ -46,7 +49,7 @@ class BluetoothManager(
     val bleDevices: MutableList<String> = mutableListOf()
     private val bluetoothStatus = MutableLiveData<Boolean>()
     private val hash: MutableState<String> = mutableStateOf("")
-    val number: MutableState<String> = mutableStateOf("")
+    val number: MutableState<String> = mutableStateOf("Not Connected")
 
     val bluetoothUtilities = BluetoothUtilities
 
@@ -200,6 +203,7 @@ class BluetoothManager(
                 Log.d("$TAG.callback", "切断しました")
                 bluetoothUtilities.bleStateMessageChange(4)
                 flag.value = 0
+                number.value = "Not Connected"
             } else if (status == 133) {
                 bluetoothUtilities.bleStateMessageChange(5)
                 Log.d("$TAG.error", "133 error")
@@ -339,6 +343,20 @@ class BluetoothManager(
             }
         }
 
+        // 正規表現で数値部分を抽出して、小数点以下2桁でフォーマット
+        fun extractAndFormatWeight(input: String): String {
+            val regex = Regex("""\d+(\.\d+)?""")
+            val matchResult = regex.find(input)
+            return if (matchResult != null) {
+                val numberString = matchResult.value
+                val number = numberString.toDouble()
+                val df = DecimalFormat("0.00", DecimalFormatSymbols(Locale.US))
+                df.format(number) + " g"
+            } else {
+                "Invalid value"
+            }
+        }
+
         @Deprecated("Deprecated in Java")
         override fun onCharacteristicChanged(
             gatt: BluetoothGatt?,
@@ -348,23 +366,8 @@ class BluetoothManager(
             val stringValue = value?.let { String(it) } ?: ""
             Log.d("bluetooth.gatt.notify", stringValue)
             bluetoothUtilities.bleStateMessageChange(6)
-            // Update the list with the received notification data
-            number.value = stringValue
+            number.value = extractAndFormatWeight(stringValue)
         }
-
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic,
-            value: ByteArray
-        ) {
-            super.onCharacteristicChanged(gatt, characteristic, value)
-            val stringValue = String(value)
-            Log.d("bluetooth.gatt.notify", stringValue)
-            bluetoothUtilities.bleStateMessageChange(6)
-            // Update the list with the received notification data
-            number.value = stringValue
-        }
-
 
         override fun onCharacteristicWrite(
             gatt: BluetoothGatt?,

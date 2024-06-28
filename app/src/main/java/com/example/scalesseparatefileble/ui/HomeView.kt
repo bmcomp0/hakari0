@@ -144,7 +144,6 @@ fun BLEMain(
                 TitleView(title = "重量記録アプリ　EJ-200B", appVersion = "v1.0.0")
 
                 ConnectDeviceView(
-                    // TODO BLEデバイスのみ表示
                     devices = viewModel.bleDevices.value?.toList() ?: listOf(),
                     scanButtonOnClick = {
                         GlobalScope.launch {

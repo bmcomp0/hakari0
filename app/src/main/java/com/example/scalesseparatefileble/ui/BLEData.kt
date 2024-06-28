@@ -133,8 +133,7 @@ fun AddDataSheet(
                         modifier = Modifier
                             .weight(0.6f)
                             .padding(start = 16.dp),
-
-                        )
+                    )
                     Spacer(modifier = Modifier.width(16.dp))
                     Button(
                         onClick = {
