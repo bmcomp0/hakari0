@@ -136,6 +136,7 @@ fun BLEMain(
         ) {
             Column(
                 modifier = Modifier
+                    .padding(16.dp)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
@@ -168,7 +169,6 @@ fun BLEMain(
                 // BLE ステータス
                 Text(
                     modifier = Modifier
-                        .padding(16.dp)
                         .height(48.dp),
                     text = bluetoothManager.bluetoothUtilities.bleStateMessage.value,
                     fontSize = 24.sp,
@@ -259,7 +259,7 @@ fun ConnectDeviceView(
                 Button(
                     onClick = scanButtonOnClick,
                     modifier = Modifier
-                        .height(48.dp)
+                        .height(60.dp)
                         .weight(1f),
                     shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(0.dp),
@@ -268,12 +268,12 @@ fun ConnectDeviceView(
                     Text(text = "Scan", fontSize = 20.sp, color = Color.White)
                 }
 
-                Spacer(modifier = Modifier.width(380.dp))
+                Spacer(modifier = Modifier.width(360.dp))
 
                 Button(
                     onClick = { selectedDeviceIndex.value?.let { connectButtonOnClick(it) } },
                     modifier = Modifier
-                        .height(48.dp)
+                        .height(60.dp)
                         .weight(1f),
                     shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(0.dp),

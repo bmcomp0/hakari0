@@ -86,7 +86,8 @@ fun NextButtonWithText(
     Button(
         onClick = nextButtonOnClick,
         modifier = Modifier
-            .height(48.dp),
+            .padding(16.dp)
+            .height(60.dp),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
     ) {

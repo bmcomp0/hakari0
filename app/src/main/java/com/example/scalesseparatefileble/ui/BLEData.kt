@@ -129,7 +129,7 @@ fun AddDataSheet(
                 ) {
                     Text(
                         text = bluetoothManager.number.value,
-                        fontSize = 48.sp,
+                        fontSize = 40.sp,
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                         color = Color.Black,
                         modifier = Modifier
@@ -141,7 +141,7 @@ fun AddDataSheet(
                         onClick = {
                             viewModel.addItem(bluetoothManager.number.value)
                         },
-//                        enabled = bluetoothManager.number.value != "Invalid Value" && bluetoothManager.number.value != "Not Connected",
+                        enabled = bluetoothManager.number.value != "Invalid Value" && bluetoothManager.number.value != "Not Connected",
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
                         shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp),
                         modifier = Modifier
