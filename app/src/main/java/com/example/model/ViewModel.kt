@@ -113,6 +113,11 @@ class ViewModel @Inject constructor(
         }
     }
 
+    fun clearDevices() {
+        devices.value?.clear()
+        bleDevices.value?.clear()
+    }
+
     fun getFileList(){
         val data = saveCsvFile.getFiles(context)
         // Print the returned array (just for demonstration)

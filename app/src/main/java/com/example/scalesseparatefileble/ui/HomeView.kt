@@ -4,6 +4,8 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +33,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -215,6 +219,11 @@ fun ConnectDeviceView(
     scanButtonOnClick: () -> Unit = {},
     connectButtonOnClick: (Int) -> Unit = {},
 ) {
+    val selectedDeviceIndex = remember { mutableStateOf<Int?>(null) }
+    LaunchedEffect(devices) {
+        selectedDeviceIndex.value = null
+    }
+
     Surface(
         modifier = Modifier
             .padding(16.dp)
@@ -231,7 +240,16 @@ fun ConnectDeviceView(
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            ConnectableDeviceList(devices = devices)
+            ConnectableDeviceList(
+                devices = devices,
+                selectedIndex = selectedDeviceIndex.value,
+                onDeviceSelected = { index ->
+                    if(selectedDeviceIndex.value == index)
+                        selectedDeviceIndex.value = null
+                    else
+                        selectedDeviceIndex.value = index
+                }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -254,13 +272,14 @@ fun ConnectDeviceView(
                 Spacer(modifier = Modifier.width(380.dp))
 
                 Button(
-                    onClick = { connectButtonOnClick(0) },
+                    onClick = { selectedDeviceIndex.value?.let { connectButtonOnClick(it) } },
                     modifier = Modifier
                         .height(48.dp)
                         .weight(1f),
                     shape = RoundedCornerShape(12.dp),
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
+                    enabled = selectedDeviceIndex.value != null
                 ) {
                     Text(text = "Connect", fontSize = 20.sp, color = Color.White)
                 }
@@ -272,18 +291,24 @@ fun ConnectDeviceView(
 @Composable
 fun ConnectableDeviceList(
     devices: List<String>,
+    selectedIndex: Int?,
+    onDeviceSelected: (Int) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         itemsIndexed(devices) { index, device ->
+            val borderColor = if (index == selectedIndex) Color(0xFF36BB9C) else Color.Transparent
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
                     .background(Color(0xFFF0F0F0), RoundedCornerShape(12.dp))
-                    .padding(horizontal = 16.dp),
+                    .border(2.dp, borderColor, RoundedCornerShape(12.dp))
+                    .padding(horizontal = 16.dp)
+                    .clickable(onClick = { onDeviceSelected(index) }),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(

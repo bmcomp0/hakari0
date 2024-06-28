@@ -83,6 +83,7 @@ class BluetoothManager(
 
         // reset device list
         bleDevices.clear()
+        viewModel.clearDevices()
 
         // Scanning code...
         bluetoothLeScanner?.let { scanner ->
@@ -118,7 +119,9 @@ class BluetoothManager(
         }
 
         try {
+            Log.d("deviceIndex", deviceIndex.toString())
             val deviceAddress = bleDevices[deviceIndex]
+            Log.d("deviceAddress", deviceAddress)
             val device = bluetoothAdapter?.getRemoteDevice(deviceAddress)
             device?.connectGatt(context, false, mGattCallback)
         } catch (e: IOException) {
@@ -165,9 +168,10 @@ class BluetoothManager(
             if(result.device.name == "MyBLEDevice"){
                 Log.d("result.device.UUID", "$result")
                 Log.d("result.device.address", result.device.address)
+
                 bleDevices.add(result.device.address)
-                bluetoothUtilities.bleStateMessageChange(2)
                 viewModel.addBleDevice(result.device.name + " : " + result.device.address)
+                bluetoothUtilities.bleStateMessageChange(2)
             }
 
             viewModel.addDevice(device)
