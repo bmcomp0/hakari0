@@ -42,7 +42,8 @@ class BluetoothManager(
     private val SCAN_PERIOD: Long = 3000
     private val messageFromBle: MutableState<String> = mutableStateOf("")
     private val flag: MutableState<Int> = mutableStateOf(0)
-    val deviceAddress: MutableState<String> = mutableStateOf("")
+//    val deviceAddress: MutableState<String> = mutableStateOf("")
+    val bleDevices: MutableList<String> = mutableListOf()
     private val bluetoothStatus = MutableLiveData<Boolean>()
     private val hash: MutableState<String> = mutableStateOf("")
     val number: MutableState<String> = mutableStateOf("")
@@ -80,6 +81,9 @@ class BluetoothManager(
             )
         }
 
+        // reset device list
+        bleDevices.clear()
+
         // Scanning code...
         bluetoothLeScanner?.let { scanner ->
             if (!scanning) { // Stops scanning after a pre-defined scan period.
@@ -99,7 +103,7 @@ class BluetoothManager(
         }
     }
 
-    fun connectToDevice(deviceAddress: String) {
+    fun connectToDevice(deviceIndex: Int) { // TODO listのインデックスから接続できるように
         // Permission Check
         val allPermissionsGranted = requiredPermissions.all {
             ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
@@ -114,6 +118,7 @@ class BluetoothManager(
         }
 
         try {
+            val deviceAddress = bleDevices[deviceIndex]
             val device = bluetoothAdapter?.getRemoteDevice(deviceAddress)
             device?.connectGatt(context, false, mGattCallback)
         } catch (e: IOException) {
@@ -160,9 +165,11 @@ class BluetoothManager(
             if(result.device.name == "MyBLEDevice"){
                 Log.d("result.device.UUID", "$result")
                 Log.d("result.device.address", result.device.address)
-                deviceAddress.value = result.device.address
+                bleDevices.add(result.device.address)
                 bluetoothUtilities.bleStateMessageChange(2)
+                viewModel.addBleDevice(result.device.name + " : " + result.device.address)
             }
+
             viewModel.addDevice(device)
         }
 

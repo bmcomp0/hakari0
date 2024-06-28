@@ -118,7 +118,6 @@ fun BLEMain(
     bluetoothManager: BluetoothManager,
     nextButtonOnClick: () -> Unit = {},
 ){
-    val deviceAddress = bluetoothManager.deviceAddress
     val context = LocalContext.current
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -142,7 +141,7 @@ fun BLEMain(
 
                 ConnectDeviceView(
                     // TODO BLEデバイスのみ表示
-                    devices = listOf("device_1", "device_2", "device_3", "device_4"),
+                    devices = viewModel.bleDevices.value?.toList() ?: listOf(),
                     scanButtonOnClick = {
                         GlobalScope.launch {
                             if (ContextCompat.checkSelfPermission(
@@ -158,7 +157,7 @@ fun BLEMain(
                     },
                     connectButtonOnClick = {
                         GlobalScope.launch {
-                            bluetoothManager.connectToDevice(deviceAddress.value)
+                            bluetoothManager.connectToDevice(it)
                         }
                     },
                 )
@@ -214,7 +213,7 @@ fun TitleView(
 fun ConnectDeviceView(
     devices: List<String>,
     scanButtonOnClick: () -> Unit = {},
-    connectButtonOnClick: () -> Unit = {},
+    connectButtonOnClick: (Int) -> Unit = {},
 ) {
     Surface(
         modifier = Modifier
@@ -255,7 +254,7 @@ fun ConnectDeviceView(
                 Spacer(modifier = Modifier.width(380.dp))
 
                 Button(
-                    onClick = connectButtonOnClick,
+                    onClick = { connectButtonOnClick(0) },
                     modifier = Modifier
                         .height(48.dp)
                         .weight(1f),

@@ -24,7 +24,8 @@ import javax.inject.Inject
 class ViewModel @Inject constructor(
         @ApplicationContext context: Context
     ) : ViewModel() {
-    val devices = MutableLiveData<MutableList<String>>(mutableStateListOf())
+    val devices = MutableLiveData<MutableList<String>>(mutableStateListOf()) // デバイスのリスト
+    val bleDevices = MutableLiveData<MutableList<String>>(mutableStateListOf()) // BLEデバイスのリスト
 //    val dataList = mutableStateListOf<String>()
     private val context = context
     private val saveCsvFile = SaveCsvFileWriter()
@@ -103,6 +104,12 @@ class ViewModel @Inject constructor(
     fun addDevice(deviceName: String) {
         if (devices.value?.contains(deviceName) == false) {
             devices.value?.add(deviceName)
+        }
+    }
+
+    fun addBleDevice(deviceName: String) {
+        if (bleDevices.value?.contains(deviceName) == false) {
+            bleDevices.value?.add(deviceName)
         }
     }
 
