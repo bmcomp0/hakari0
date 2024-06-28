@@ -30,7 +30,7 @@ import com.example.scalesseparatefileble.util.ColumnItem
 
 
 @Composable
-fun FifthScreen(
+fun CSVFileDataView(
     viewModel: ViewModel = hiltViewModel(),
     onTapBackButton: () -> Unit = {},
     onTapHomeButton: () -> Unit = {}

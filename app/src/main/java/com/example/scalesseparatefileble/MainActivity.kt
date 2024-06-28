@@ -10,10 +10,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.model.ViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
-import com.example.scalesseparatefileble.ui.FifthScreen
-import com.example.scalesseparatefileble.ui.FirstScreen
-import com.example.scalesseparatefileble.ui.FourthScreen
-import com.example.scalesseparatefileble.ui.ThirdScreen
+import com.example.scalesseparatefileble.ui.CSVFileDataView
+import com.example.scalesseparatefileble.ui.HomeView
+import com.example.scalesseparatefileble.ui.CSVFileListView
+import com.example.scalesseparatefileble.ui.BLEDataView
 
 
 class MainActivity : ComponentActivity() {
@@ -35,14 +35,14 @@ fun NavControllers(viewModel: ViewModel, bluetoothManager: BluetoothManager) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "First") {
         composable(route = "First") {
-            FirstScreen(
+            HomeView(
                 viewModel = viewModel,
                 bluetoothManager = bluetoothManager,
                 navigationController = navController,
             )
         }
         composable(route = "Third"){
-            ThirdScreen(
+            BLEDataView(
                 viewModel = viewModel,
                 bluetoothManager = bluetoothManager,
                 onTapNextButton = { navController.navigate("Fourth") },
@@ -50,7 +50,7 @@ fun NavControllers(viewModel: ViewModel, bluetoothManager: BluetoothManager) {
             )
         }
         composable(route = "Fourth"){
-            FourthScreen(
+            CSVFileListView(
                 viewModel = viewModel,
                 onTapBackButton = { navController.navigate("Third") },
                 onTapNextButton = { navController.navigate("Fifth") },
@@ -58,7 +58,7 @@ fun NavControllers(viewModel: ViewModel, bluetoothManager: BluetoothManager) {
             )
         }
         composable(route = "Fifth"){
-            FifthScreen(
+            CSVFileDataView(
                 viewModel = viewModel,
                 onTapBackButton = { navController.navigate("Fourth") },
                 onTapHomeButton = { navController.navigate("First") }

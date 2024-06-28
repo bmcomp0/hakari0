@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FirstScreen(
+fun HomeView(
     viewModel: ViewModel = hiltViewModel(),
     bluetoothManager: BluetoothManager,
     navigationController: NavController,

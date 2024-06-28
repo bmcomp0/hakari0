@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.example.model.ViewModel
 
 @Composable
-fun FourthScreen(
+fun CSVFileListView(
     viewModel: ViewModel,
     onTapBackButton: () -> Unit = {},
     onTapNextButton: () -> Unit = {},
@@ -71,7 +71,7 @@ fun FileLists(
     val files = viewModel.csvFileList
 
     FileList(files = files) { fileName ->
-        viewModel.readDataCsv("$fileName")
+        viewModel.readDataCsv(fileName)
         onTapNextButton()
     }
 }

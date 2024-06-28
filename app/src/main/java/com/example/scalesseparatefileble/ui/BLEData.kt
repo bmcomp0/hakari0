@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -36,9 +35,8 @@ import com.example.model.ViewModel
 import com.example.scalesseparatefileble.bluetooth.BluetoothManager
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ThirdScreen(
+fun BLEDataView(
     viewModel: ViewModel = hiltViewModel(),
     bluetoothManager: BluetoothManager,
     onTapNextButton: () -> Unit = {},
