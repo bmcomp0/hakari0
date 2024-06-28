@@ -1,6 +1,7 @@
 package com.example.scalesseparatefileble.ui
 
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.example.model.ViewModel
 import com.example.scalesseparatefileble.util.CustomSwipeToDismiss
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun BLEDataList(viewModel: ViewModel) {
     val listState = rememberLazyListState()
@@ -50,6 +51,12 @@ fun BLEDataList(viewModel: ViewModel) {
         state = listState
     ) {
         itemsIndexed(items = viewModel.items, key = { _, item -> item.id }) { index, item ->
+            LaunchedEffect(items.size) {
+                if (items.isNotEmpty()) {
+                    listState.animateScrollToItem(items.size - 1)
+                }
+            }
+
             val dismissState = rememberDismissState(
                 confirmStateChange = {
                     if (it == DismissValue.DismissedToStart) {
@@ -67,6 +74,7 @@ fun BLEDataList(viewModel: ViewModel) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(56.dp)
                             .clip(RoundedCornerShape(14.dp)) // 最初にclipを適用
                             .background(Color.Red)
                             .padding(5.dp), // clipの後にpaddingを適用

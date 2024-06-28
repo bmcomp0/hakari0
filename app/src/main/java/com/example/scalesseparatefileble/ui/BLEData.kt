@@ -141,7 +141,7 @@ fun AddDataSheet(
                         onClick = {
                             viewModel.addItem(bluetoothManager.number.value)
                         },
-                        enabled = bluetoothManager.number.value != "Invalid Value" && bluetoothManager.number.value != "Not Connected",
+//                        enabled = bluetoothManager.number.value != "Invalid Value" && bluetoothManager.number.value != "Not Connected",
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
                         shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp),
                         modifier = Modifier
