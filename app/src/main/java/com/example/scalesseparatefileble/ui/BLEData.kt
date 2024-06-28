@@ -72,8 +72,13 @@ fun BLEDataView(
                     bluetoothManager = bluetoothManager
                 )
                 BottomNavigation(
-                    viewModel = viewModel,
+                    modifier = Modifier,
+                    isCenterButtonHome = false,
+                    showNextButton = true,
                     onTapBackButton = onTapBackButton,
+                    onTapCenterButton = {
+                        viewModel.saveDataCsv()
+                    },
                     onTapNextButton = onTapNextButton
                 )
             }
@@ -150,42 +155,6 @@ fun AddDataSheet(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun BottomNavigation(
-    viewModel: ViewModel,
-    onTapBackButton: () -> Unit,
-    onTapNextButton: () -> Unit
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
-        color = Color(0xFFFFFFFF)
-    ){
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            BackButton(
-                backButtonOnClick = onTapBackButton
-            )
-
-            SaveButton(
-                saveButtonOnClick = {
-                    viewModel.saveDataCsv()
-                }
-            )
-
-            NextButton(
-                nextButtonOnClick = onTapNextButton
-            )
         }
     }
 }

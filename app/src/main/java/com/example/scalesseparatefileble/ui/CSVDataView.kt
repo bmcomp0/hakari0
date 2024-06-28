@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +14,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,24 +46,24 @@ fun CSVFileDataView(
                 text = viewModel.filePath.value,
                 fontSize = 20.sp
             )
-            CSVDataShow(
-                viewModel = viewModel
-            )
+
+            CsvDataListScreen(dataList = viewModel.csvDataList)
         }
 
         BottomNavigation(
+            modifier = Modifier
+                .shadow(
+                    ambientColor = Color(0xFF000000),
+                    elevation = 32.dp,
+                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                ),
+            isCenterButtonHome = true,
+            showNextButton = false,
             onTapBackButton = onTapBackButton,
-            onTapHomeButton = onTapHomeButton
+            onTapCenterButton = onTapHomeButton,
+            onTapNextButton = {}
         )
     }
-}
-
-@Composable
-fun CSVDataShow(
-    viewModel: ViewModel,
-) {
-    val csvDataList = viewModel.csvDataList
-    CsvDataListScreen(dataList = csvDataList)
 }
 
 @Composable
@@ -94,48 +92,12 @@ fun CsvDataListScreen(dataList: List<ColumnItem>) {
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
-                        text = "${item.value}", // Updated to use item.text instead of item.value
+                        text = item.value, // Updated to use item.text instead of item.value
                         style = MaterialTheme.typography.body1,
                         modifier = Modifier.weight(2f)
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun BottomNavigation(
-    onTapBackButton: () -> Unit,
-    onTapHomeButton: () -> Unit
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .shadow(
-                ambientColor = Color(0xFF000000),
-                elevation = 32.dp,
-                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-            ),
-        color = Color(0xFFFFFFFF)
-    ){
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            BackButton(
-                backButtonOnClick = onTapBackButton
-            )
-
-            HomeButton(
-                homeButtonOnClick = onTapHomeButton
-            )
-
-            Spacer(modifier = Modifier.width(48.dp))
         }
     }
 }
