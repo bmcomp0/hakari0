@@ -115,6 +115,9 @@ class ViewModel @Inject constructor(
 
     fun clearDevices() {
         devices.value?.clear()
+    }
+
+    fun clearBleDevices() {
         bleDevices.value?.clear()
     }
 

@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,8 +41,16 @@ fun CSVFileDataView(
     ) {
         Column(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(16.dp)
+                .weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = viewModel.readingCsvFile.value,
+                fontSize = 28.sp
+            )
+
             Text(
                 text = viewModel.filePath.value,
                 fontSize = 20.sp
@@ -72,7 +81,10 @@ fun CsvDataListScreen(dataList: List<ColumnItem>) {
         Text(
             text = "No data",
             style = MaterialTheme.typography.h6,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            textAlign = TextAlign.Center
         )
         return
     }

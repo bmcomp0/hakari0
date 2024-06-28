@@ -87,6 +87,7 @@ class BluetoothManager(
         // reset device list
         bleDevices.clear()
         viewModel.clearDevices()
+        viewModel.clearBleDevices()
 
         // Scanning code...
         bluetoothLeScanner?.let { scanner ->
@@ -353,7 +354,7 @@ class BluetoothManager(
                 val df = DecimalFormat("0.00", DecimalFormatSymbols(Locale.US))
                 df.format(number) + " g"
             } else {
-                "Invalid value"
+                "Invalid Value"
             }
         }
 

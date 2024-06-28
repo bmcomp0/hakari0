@@ -52,8 +52,10 @@ fun BLEDataView(
     ) {
         Column(
             modifier = Modifier
+                .padding(16.dp)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = viewModel.label.value, fontSize = 28.sp) // ラベルタイトル
 
@@ -139,6 +141,7 @@ fun AddDataSheet(
                         onClick = {
                             viewModel.addItem(bluetoothManager.number.value)
                         },
+                        enabled = bluetoothManager.number.value != "Invalid Value" && bluetoothManager.number.value != "Not Connected",
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF36BB9C)),
                         shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp),
                         modifier = Modifier
@@ -149,7 +152,7 @@ fun AddDataSheet(
                             modifier = Modifier.fillMaxSize(),
                             imageVector = Icons.Default.Add,
                             contentDescription = "Add",
-                            tint = Color.White
+                            tint = Color.White,
                         )
                     }
                 }

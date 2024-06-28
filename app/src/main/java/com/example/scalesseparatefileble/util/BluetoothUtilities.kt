@@ -16,7 +16,7 @@ class BluetoothUtilities {
             when(state){
                 0 -> bleStateMessage.value = ""
                 1 -> bleStateMessage.value = "BLE初期化完了"
-                2 -> bleStateMessage.value = "MyBLEDevice found!"
+                2 -> bleStateMessage.value = "BLEDeviceが見つかりました"
                 3 -> bleStateMessage.value = "GATT取得完了"
                 4 -> bleStateMessage.value = "切断しました"
                 5 -> bleStateMessage.value = "133"

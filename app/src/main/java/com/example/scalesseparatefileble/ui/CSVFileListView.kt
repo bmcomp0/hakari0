@@ -35,6 +35,7 @@ fun CSVFileListView(
         Column(
             modifier = Modifier
                 .padding(16.dp)
+                .weight(1f)
         ){
             Text(
                 text = "直近の保存：${viewModel.filePath.value}",
